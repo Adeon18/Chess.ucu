@@ -40,3 +40,5 @@ WHITE_PIECES = {
     "rook": "w_rook.png",
     "queen": "w_queen.png",
 }
+
+PATHRADIUS = 20

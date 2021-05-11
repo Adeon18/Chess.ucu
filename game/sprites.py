@@ -3,7 +3,7 @@ from settings import *
 from pprint import pprint
 
 letters = {'a': 0, 'b': 1, 'c': 2, 'd': 3, 'e': 4, 'f': 5, 'g': 6, 'h': 7}
-letters2 = {0: 'a', 1: 'b', 2: 'c', 3: 'c', 4: 'e', 5: 'f', 6: 'g', 7: 'h'}
+letters2 = {0: 'a', 1: 'b', 2: 'c', 3: 'd', 4: 'e', 5: 'f', 6: 'g', 7: 'h'}
 
 def convert_position(string):
     '''
@@ -40,7 +40,8 @@ class BoardADT:
     [0, 0, 0, 0, 0, 0, 0, 0],
     [0, 0, 0, 0, 0, 0, 0, 0]
 ]
-    
+        self.moves = 0
+
     def __getitem__(self, pos):
         '''
         '''
@@ -75,6 +76,24 @@ class BoardADT:
             for elem in row:
                 if elem != 0:
                     elem.selected = False
+    
+    def check_moves(self, pos):
+        """
+        Check if we are allowed to move dependng on the color
+        """
+        x, y = pos
+        # print(self.moves)
+        if self.moves % 2 == 0:
+            # print(1)
+            if self.content[y][x] != 0:
+                # print(2)
+                if self.content[y][x].color == 1:
+                    return True
+        else:
+            if self.content[y][x] != 0:
+                if self.content[y][x].color == 0:
+                    return True
+
 
 class Piece(pygame.sprite.Sprite):
     '''
@@ -102,6 +121,7 @@ class Piece(pygame.sprite.Sprite):
         self.rect.centery = 1*TILESIZE + self.grid_y * TILESIZE + TILESIZE/2
 
         self.selected = False
+        self.draw_add_data = False
 
         self.tipe = tipe
         self.pos = pos
@@ -111,27 +131,53 @@ class Piece(pygame.sprite.Sprite):
     def __repr__(self):
         return self.tipe
     
+    def draw_possible_moves(self):
+        """
+        Draw possible positions for movement
+        """
+        possibilities = [convert_position(x) for x in self.possible_moves()]
+        for pos in possibilities:
+            # Define the center of the circle
+            center = (4*TILESIZE + pos[0] * TILESIZE + TILESIZE/2, 1*TILESIZE + pos[1] * TILESIZE + TILESIZE/2)
+            pygame.draw.circle(self.game.screen, RED, center, PATHRADIUS)
+    
     def update(self):
         # keys = pygame.key.get_pressed()
-        if pygame.mouse.get_pressed()[0] and self.selected:
-            mouse_position = pygame.mouse.get_pos()
-            nxt_pos = self.game.move_click(mouse_position)
-            # print(self.possible_moves())
-            if nxt_pos in [convert_position(x) for x in self.possible_moves()]:
-                self.move(nxt_pos)
+        if self.selected and self.game_board.check_moves((self.grid_x, self.grid_y)):
+            self.draw_add_data = True
+            if pygame.mouse.get_pressed()[0]:
+                handled = pygame.mouse.get_pressed()[0]
+                mouse_position = pygame.mouse.get_pos()
+                nxt_pos = self.game.move_click(mouse_position)
+                # print(self.possible_moves())
+                if nxt_pos in [convert_position(x) for x in self.possible_moves()]:
+                    self.move(nxt_pos)
+        else:
+            self.draw_add_data = False
     
     def move(self, next_pos):
+        """
+        Move the figure to the next position
+        """
         if next_pos:
+            self.grid_x, self.grid_y = next_pos  # This is to keep track of the pos
             self.rect.centerx = 4*TILESIZE + next_pos[0] * TILESIZE + TILESIZE/2
             self.rect.centery = 1*TILESIZE + next_pos[1] * TILESIZE + TILESIZE/2
-            print(next_pos)
+            # Get the next pos
             next_pos = convert_position_to_str(next_pos)
-            
+            print(next_pos)
+            # Kill if needed
+            if self.game_board[next_pos] != 0: 
+                self.game_board[next_pos].kill()
+            # Update the board
             self.game_board.add_piece(self, next_pos)
             self.game_board.remove_piece(self.pos)
             self.pos = next_pos
             print(self.game_board)
-        self.selected = False
+            # Deselect and change turns
+            self.game_board.moves += 1
+            self.selected = False
+            self.draw_add_data = False
 
 class Pawn(Piece):
     '''
@@ -165,20 +211,160 @@ class Pawn(Piece):
             mod = -1
 
         x, y = convert_position(self.pos)
-
-        pos = self.pos[0] + str(int(self.pos[1]) + mod)
-        if self.game_board[pos] == 0:
-            possible_moves.append(pos)
+        try:
+            pos = self.pos[0] + str(int(self.pos[1]) + mod)
+            if self.game_board[pos] == 0:
+                possible_moves.append(pos)
+        except (IndexError, KeyError, AttributeError):
+            pass
         
-        pos = letters2[letters[self.pos[0]]-1] + str(int(self.pos[1]) + mod)
-        if self.game_board[pos] != 0:
-            possible_moves.append(pos)
+        try:
+            pos = letters2[letters[self.pos[0]]-1] + str(int(self.pos[1]) + mod)
+            if self.game_board[pos].color != self.color:
+                possible_moves.append(pos)
+        except (IndexError, KeyError, AttributeError):
+            pass
 
-        pos = letters2[letters[self.pos[0]]+1] + str(int(self.pos[1]) + mod)
-        if self.game_board[pos] != 0:
-            possible_moves.append(pos)
+        try:
+            pos = letters2[letters[self.pos[0]]+1] + str(int(self.pos[1]) + mod)
+            if self.game_board[pos].color != self.color:
+                possible_moves.append(pos)
+        except (IndexError, KeyError, AttributeError):
+            pass
 
         return possible_moves
+
+class King(Piece):
+    '''
+    a class representing a pown piece
+    '''
+    def __init__(self, game, board, color, pos):
+        '''
+        initialise a pawn with its colour and position
+        white color is represented as 1
+        black color is represented as 0
+        possibility of en passant capture is declared by default as False
+        '''
+        if color == 1:
+            self.image = game.white_pieces["king"]
+            super().__init__(game, board, 'K', color, pos)
+        if color == 0:
+            self.image = game.black_pieces["king"]
+            super().__init__(game, board, 'k', color, pos)
+    
+    def possible_moves(self):
+        '''
+        return a list of all possible moves for piece as names of cells a-h 1-8
+        '''
+        possible_moves = []
+
+        x, y = convert_position(self.pos)
+
+        for i in range(3):
+            for j in range(3):
+                try:
+                    pos = (x - 1 + i, y - 1 + j)
+
+                    if self.game_board[convert_position_to_str(pos)] == 0:
+                        possible_moves.append(convert_position_to_str(pos))
+                    
+                    elif self.game_board[convert_position_to_str(pos)].color != self.color:
+                        possible_moves.append(convert_position_to_str(pos))
+                except (IndexError, KeyError):
+                    pass
+
+        return possible_moves
+
+class Knight(Piece):
+    '''
+    a class representing a pown piece
+    '''
+    def __init__(self, game, board, color, pos):
+        '''
+        initialise a pawn with its colour and position
+        white color is represented as 1
+        black color is represented as 0
+        possibility of en passant capture is declared by default as False
+        '''
+        if color == 1:
+            self.image = game.white_pieces["knight"]
+            super().__init__(game, board, 'N', color, pos)
+        if color == 0:
+            self.image = game.black_pieces["knight"]
+            super().__init__(game, board, 'n', color, pos)
+    
+    def possible_moves(self):
+        '''
+        return a list of all possible moves for piece as names of cells a-h 1-8
+        '''
+        possible_moves = []
+
+        x, y = convert_position(self.pos)
+
+        for i in range(-2, 5):
+            for j in range(-2, 5):
+                try:
+                    if i ** 2 + j ** 2 == 5:
+                        pos = (x + i, y + j)
+                        if self.game_board[convert_position_to_str(pos)] == 0:
+                            possible_moves.append(convert_position_to_str(pos))
+                    
+                        elif self.game_board[convert_position_to_str(pos)].color != self.color:
+                            possible_moves.append(convert_position_to_str(pos))
+                except (IndexError, KeyError):
+                    pass
+
+        return possible_moves
+
+class Bishop(Piece):
+    '''
+    a class representing a pown piece
+    '''
+    def __init__(self, game, board, color, pos):
+        '''
+        initialise a pawn with its colour and position
+        white color is represented as 1
+        black color is represented as 0
+        possibility of en passant capture is declared by default as False
+        '''
+        if color == 1:
+            self.image = game.white_pieces["bishop"]
+            super().__init__(game, board, 'B', color, pos)
+        if color == 0:
+            self.image = game.black_pieces["bishop"]
+            super().__init__(game, board, 'b', color, pos)
+    
+    def possible_moves(self):
+        '''
+        return a list of all possible moves for piece as names of cells a-h 1-8
+        '''
+        possible_moves = []
+
+        
+
+        x, y = convert_position(self.pos)
+
+        diagonals = [[[x + i, y + i] for i in range(1, 8)],
+                    [[x + i, y - i] for i in range(1, 8)],
+                    [[x - i, y + i] for i in range(1, 8)],
+                    [[x - i, y - i] for i in range(1, 8)]]
+
+        for direction in diagonals:
+            for position in direction:
+                try:
+                    if position[0] < 0 or position[1] < 0 or position[0] > 7 or position[1] > 7:
+                        break
+                    pos = (position[0], position[1])
+                    if self.game_board[convert_position_to_str(pos)] == 0:
+                        possible_moves.append(convert_position_to_str(pos))
+
+                    elif self.game_board[convert_position_to_str(pos)].color != self.color:
+                        possible_moves.append(convert_position_to_str(pos))
+                except (IndexError, KeyError):
+                    pass
+        
+        return possible_moves
+
 
 class Position(pygame.sprite.Sprite):
     def __init__(self, game, grid_x, grid_y, color):

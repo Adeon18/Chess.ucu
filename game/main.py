@@ -51,8 +51,11 @@ class Game:
         self.create_board()
         self.board = BoardADT()
         Pawn(self, self.board, 0, "b8")
-        Pawn(self, self.board, 0, "g2")
-        Pawn(self, self.board, 1, "c4")
+        Pawn(self, self.board, 0, "g8")
+        King(self, self.board, 0, "c4")
+        Knight(self, self.board, 0, "c6")
+
+        Bishop(self, self.board, 1, "e6")
 
         self.draw_debug = False
         self.paused = False
@@ -105,6 +108,7 @@ class Game:
                     pos = Position(self, x, y, BROWN)
                 # Piece(self, pos, x, y)
     
+    
     def select_click(self, pos):
         """
         Select a piece
@@ -134,6 +138,7 @@ class Game:
         self.screen.fill(BGCOLOR)
 
         self.draw_grid()
+        self.draw_hud()
         # self.all_sprites.draw(self.screen)
         for sprite in self.all_sprites:
             self.screen.blit(sprite.image, (sprite.rect.x, sprite.rect.y))
@@ -143,6 +148,9 @@ class Game:
             # Draw selected border 
             if hasattr(sprite, "selected") and sprite.selected:
                 pygame.draw.rect(self.screen, RED, sprite.rect, 3)
+            if hasattr(sprite, "draw_add_data") and sprite.draw_add_data:
+                sprite.draw_possible_moves()
+            
 
         if self.draw_debug:
             self.draw_text("{:.2f}".format(self.clock.get_fps()), 25, CYAN, self.scr_width / 2, 30)
@@ -215,7 +223,12 @@ class Game:
         self.screen.blit(text_surface, text_rect)
 
     def draw_hud(self):
-        pass
+        for i in range(1, 9):
+            side1_x = 3*TILESIZE + TILESIZE/2
+            side2_x = WIDTH - 4*TILESIZE + TILESIZE/2
+            y = i * TILESIZE + TILESIZE/2
+            self.draw_text(str(i), 20, WHITE, side1_x, y)
+            self.draw_text(str(i), 20, WHITE, side2_x, y)
 
 
 
