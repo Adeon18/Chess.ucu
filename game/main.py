@@ -1,0 +1,164 @@
+import pygame
+import sys
+from os import path
+
+from settings import *
+
+class Game:
+    def __init__(self):
+        pygame.mixer.pre_init(44100, -16, 2, 2048)
+        pygame.mixer.init()
+        pygame.init()
+        # Make screen
+        self.screen = pygame.display.set_mode((WIDTH, HEIGHT))
+        #self.screen = pygame.display.set_mode((0, 0), pygame.FULLSCREEN)
+        self.scr_width, self.scr_height = pygame.display.get_surface().get_size()
+        pygame.display.set_caption(TITLE)
+        # Load data and start te clock
+        self.clock = pygame.time.Clock()
+        self.load_data()
+
+    def load_data(self):
+        """
+        Load all the external data
+        """
+        game_folder = path.dirname(__file__)
+        img_folder = path.join(game_folder, 'img')
+
+        self.dim_screen = pygame.Surface(self.screen.get_size()).convert_alpha()
+        self.dim_screen.fill((0, 0, 0, 180))
+
+
+    def new(self):
+        """
+        New game
+        """
+        # initialize all variables and do all the setup for a new game
+        self.all_sprites = pygame.sprite.LayeredUpdates()
+
+
+        self.draw_debug = False
+        self.paused = False
+
+    def run(self):
+        # game loop - set self.playing = False to end the game
+        self.playing = True
+
+        while self.playing:
+            self.dt = self.clock.tick(FPS) / 1000.0
+            self.events()
+            if not self.paused:
+                self.update()
+            self.draw()
+
+    def quit(self):
+        pygame.quit()
+        sys.exit()
+
+    def update(self):
+        """
+        The whole game process logic that need to be updated each second
+        """
+        self.all_sprites.update()
+
+
+    def draw_grid(self):
+        for x in range(0, WIDTH, TILESIZE):
+            pygame.draw.line(self.screen, LIGHTGREY, (x, 0), (x, HEIGHT))
+        for y in range(0, HEIGHT, TILESIZE):
+            pygame.draw.line(self.screen, LIGHTGREY, (0, y), (WIDTH, y))
+        
+        for x in range(0, WIDTH, TILESIZE):
+            pygame.draw.line(self.screen, LIGHTGREY, (x, 0), (x, HEIGHT))
+        for y in range(0, HEIGHT, TILESIZE):
+            pygame.draw.line(self.screen, LIGHTGREY, (0, y), (WIDTH, y))
+
+    def draw(self):
+        """
+        Blit everything to the screen each frame
+        """
+        pygame.display.set_caption("{:.2f}".format(self.clock.get_fps()))
+        self.screen.fill(BGCOLOR)
+
+        self.draw_grid()
+
+        for sprite in self.all_sprites:
+            self.screen.blit(sprite.image, self.camera.apply(sprite))
+            if self.draw_debug:
+                pygame.draw.rect(self.screen, CYAN, self.camera.apply_rect(sprite.hit_rect), 1)
+        if self.draw_debug:
+            self.draw_text("{:.2f}".format(self.clock.get_fps()), 25, CYAN, self.scr_width / 2, 30)
+
+        # What to draw if paused
+        if self.paused:
+            self.screen.blit(self.dim_screen, (0, 0))
+            self.draw_text('Paused', 105, RED, self.scr_width / 2, self.scr_height / 2)
+        pygame.display.flip()
+
+    def events(self):
+        # catch all events here
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                self.quit()
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_F4:
+                    self.quit()
+                if event.key == pygame.K_F3:
+                    self.draw_debug = not self.draw_debug
+                if event.key == pygame.K_p:
+                    self.paused = not self.paused
+
+    def show_start_screen(self):
+        pass
+
+    def show_go_screen(self):
+        pass
+
+    def wait_for_key(self):
+        pygame.event.wait()
+        waiting = True
+        while waiting:
+            self.clock.tick(FPS)
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    waiting = False
+                    self.quit()
+                if event.type == pygame.KEYUP:
+                    waiting = False
+
+    def draw_text(self, text, size, color, x, y, align='center'):
+        font = pygame.font.SysFont('Consolas', size)
+        text_surface = font.render(text, True, color)
+        text_rect = text_surface.get_rect()
+        if align == "nw":
+            text_rect.topleft = (x, y)
+        if align == "ne":
+            text_rect.topright = (x, y)
+        if align == "sw":
+            text_rect.bottomleft = (x, y)
+        if align == "se":
+            text_rect.bottomright = (x, y)
+        if align == "n":
+            text_rect.midtop = (x, y)
+        if align == "s":
+            text_rect.midbottom = (x, y)
+        if align == "e":
+            text_rect.midright = (x, y)
+        if align == "w":
+            text_rect.midleft = (x, y)
+        if align == "center":
+            text_rect.center = (x, y)
+        self.screen.blit(text_surface, text_rect)
+
+    def draw_hud(self):
+        pass
+
+
+
+# create the game object
+g = Game()
+g.show_start_screen()
+while True:
+    g.new()
+    g.run()
+    g.show_go_screen()
