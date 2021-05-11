@@ -51,7 +51,8 @@ class Game:
         self.create_board()
         self.board = BoardADT()
         Pawn(self, self.board, 0, "b8")
-
+        Pawn(self, self.board, 0, "g2")
+        Pawn(self, self.board, 1, "c4")
 
         self.draw_debug = False
         self.paused = False
@@ -168,6 +169,7 @@ class Game:
                 mouse_position = pygame.mouse.get_pos()
                 pos = self.select_click(mouse_position)
                 if pos:
+                    self.board.deselect_all()
                     pos.selected = True
 
     def show_start_screen(self):

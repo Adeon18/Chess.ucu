@@ -66,6 +66,15 @@ class BoardADT:
                 result += str(j) + " "
             result += "\n"
         return result
+    
+    def deselect_all(self):
+        """
+        Deselect all pieces
+        """
+        for row in self.content:
+            for elem in row:
+                if elem != 0:
+                    elem.selected = False
 
 class Piece(pygame.sprite.Sprite):
     '''
