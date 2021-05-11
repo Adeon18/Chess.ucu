@@ -3,6 +3,7 @@ import sys
 from os import path
 
 from settings import *
+from sprites import *
 
 class Game:
     def __init__(self):
@@ -25,6 +26,16 @@ class Game:
         game_folder = path.dirname(__file__)
         img_folder = path.join(game_folder, 'img')
 
+        self.white_pieces = {}
+        for piece in WHITE_PIECES:
+            original_image = pygame.image.load(path.join(img_folder, WHITE_PIECES[piece]))
+            self.white_pieces[piece] = pygame.transform.scale(original_image, (60, 60))
+        
+        self.black_pieces = {}
+        for piece in BLACK_PIECES:
+            original_image = pygame.image.load(path.join(img_folder, BLACK_PIECES[piece]))
+            self.black_pieces[piece] = pygame.transform.scale(original_image, (60, 60))
+
         self.dim_screen = pygame.Surface(self.screen.get_size()).convert_alpha()
         self.dim_screen.fill((0, 0, 0, 180))
 
@@ -35,6 +46,11 @@ class Game:
         """
         # initialize all variables and do all the setup for a new game
         self.all_sprites = pygame.sprite.LayeredUpdates()
+        self.positions = pygame.sprite.LayeredUpdates()
+        self.pieces = pygame.sprite.LayeredUpdates()
+        self.create_board()
+        self.board = BoardADT()
+        Pawn(self, self.board, 1, "b2")
 
 
         self.draw_debug = False
@@ -68,10 +84,46 @@ class Game:
         for y in range(0, HEIGHT, TILESIZE):
             pygame.draw.line(self.screen, LIGHTGREY, (0, y), (WIDTH, y))
         
-        for x in range(0, WIDTH, TILESIZE):
-            pygame.draw.line(self.screen, LIGHTGREY, (x, 0), (x, HEIGHT))
-        for y in range(0, HEIGHT, TILESIZE):
-            pygame.draw.line(self.screen, LIGHTGREY, (0, y), (WIDTH, y))
+        # for x in range(4*TILESIZE, WIDTH - 4*TILESIZE, TILESIZE):
+        #     for y in range(TILESIZE, HEIGHT - 1*TILESIZE, TILESIZE):
+        #         if ((x+y) / TILESIZE) % 2 == 0:
+        #             pygame.draw.rect(self.screen, LIGHTBROWN, pygame.Rect(x, y, TILEWIDTH, TILEHEIGHT))
+        #         else:
+        #             pygame.draw.rect(self.screen, BROWN, pygame.Rect(x, y, TILEWIDTH, TILEHEIGHT))
+        # self.screen.blit(self.black_pieces["queen"], (5*TILESIZE, 5*TILESIZE))
+
+        # self.screen.blit(self.white_pieces["queen"], (300, 100))
+    
+    def create_board(self):
+        for x in range(8):
+            for y in range(8):
+                if (x+y) % 2 == 0:
+                    pos = Position(self, x, y, LIGHTBROWN)
+                    # print("lol")
+                else:
+                    pos = Position(self, x, y, BROWN)
+                # Piece(self, pos, x, y)
+    
+    def select_click(self, pos):
+        """
+        Select a piece
+        """
+        if 4* TILESIZE <= pos[0] <= WIDTH - 4* TILESIZE and 1 * TILESIZE <= pos[1] <= WIDTH - 1 * TILESIZE:
+            for piece in self.pieces:
+                piece.selected = False
+                if piece.rect.collidepoint(pos):
+                    return piece
+    
+    def move_click(self, pos):
+        """
+        Select a place for the piece to go to
+        """
+        if 4* TILESIZE <= pos[0] <= WIDTH - 4* TILESIZE and 1 * TILESIZE <= pos[1] <= WIDTH - 1 * TILESIZE:
+            for position in self.positions:
+                position.selected = False
+                if position.rect.collidepoint(pos):
+                    return position.grid_x, position.grid_y
+
 
     def draw(self):
         """
@@ -81,11 +133,16 @@ class Game:
         self.screen.fill(BGCOLOR)
 
         self.draw_grid()
-
+        # self.all_sprites.draw(self.screen)
         for sprite in self.all_sprites:
-            self.screen.blit(sprite.image, self.camera.apply(sprite))
+            self.screen.blit(sprite.image, (sprite.rect.x, sprite.rect.y))
+            # sprite.draw()
             if self.draw_debug:
-                pygame.draw.rect(self.screen, CYAN, self.camera.apply_rect(sprite.hit_rect), 1)
+                pygame.draw.rect(self.screen, CYAN, sprite.rect, 1)
+            # Draw selected border 
+            if hasattr(sprite, "selected") and sprite.selected:
+                pygame.draw.rect(self.screen, RED, sprite.rect, 3)
+
         if self.draw_debug:
             self.draw_text("{:.2f}".format(self.clock.get_fps()), 25, CYAN, self.scr_width / 2, 30)
 
@@ -107,6 +164,11 @@ class Game:
                     self.draw_debug = not self.draw_debug
                 if event.key == pygame.K_p:
                     self.paused = not self.paused
+            if event.type == pygame.MOUSEBUTTONUP:
+                mouse_position = pygame.mouse.get_pos()
+                pos = self.select_click(mouse_position)
+                if pos:
+                    pos.selected = True
 
     def show_start_screen(self):
         pass
