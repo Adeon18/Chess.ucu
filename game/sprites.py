@@ -13,6 +13,15 @@ def convert_position(string):
     y = 8 - int(y)
     return x, y
 
+def convert_position_to_str(pos):
+    '''
+    '''
+    x, y = pos[0], pos[1]
+    x = letters2[x]
+    y = 8-y
+    res = str(x) + str(y)
+    return res
+
 class BoardADT:
     '''
     board data type which contains all the information about the chess game
@@ -43,6 +52,12 @@ class BoardADT:
         '''
         x, y = convert_position(position)
         self.content[y][x] = piece
+
+    def remove_piece(self, position):
+        '''
+        '''
+        x, y = convert_position(position)
+        self.content[y][x] = 0
     
     def __str__(self):
         result = ""
@@ -92,12 +107,21 @@ class Piece(pygame.sprite.Sprite):
         if pygame.mouse.get_pressed()[0] and self.selected:
             mouse_position = pygame.mouse.get_pos()
             nxt_pos = self.game.move_click(mouse_position)
-            self.move(nxt_pos)
+            # print(self.possible_moves())
+            if nxt_pos in [convert_position(x) for x in self.possible_moves()]:
+                self.move(nxt_pos)
     
     def move(self, next_pos):
         if next_pos:
             self.rect.centerx = 4*TILESIZE + next_pos[0] * TILESIZE + TILESIZE/2
             self.rect.centery = 1*TILESIZE + next_pos[1] * TILESIZE + TILESIZE/2
+            print(next_pos)
+            next_pos = convert_position_to_str(next_pos)
+            
+            self.game_board.add_piece(self, next_pos)
+            self.game_board.remove_piece(self.pos)
+            self.pos = next_pos
+            print(self.game_board)
         self.selected = False
 
 class Pawn(Piece):

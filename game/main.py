@@ -50,7 +50,7 @@ class Game:
         self.pieces = pygame.sprite.LayeredUpdates()
         self.create_board()
         self.board = BoardADT()
-        Pawn(self, self.board, 1, "b2")
+        Pawn(self, self.board, 0, "b8")
 
 
         self.draw_debug = False
@@ -93,7 +93,7 @@ class Game:
         # self.screen.blit(self.black_pieces["queen"], (5*TILESIZE, 5*TILESIZE))
 
         # self.screen.blit(self.white_pieces["queen"], (300, 100))
-    
+
     def create_board(self):
         for x in range(8):
             for y in range(8):
