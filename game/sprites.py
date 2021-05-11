@@ -365,6 +365,118 @@ class Bishop(Piece):
         
         return possible_moves
 
+class Rook(Piece):
+    '''
+    a class representing a pown piece
+    '''
+    def __init__(self, game, board, color, pos):
+        '''
+        initialise a pawn with its colour and position
+        white color is represented as 1
+        black color is represented as 0
+        possibility of en passant capture is declared by default as False
+        '''
+        if color == 1:
+            self.image = game.white_pieces["rook"]
+            super().__init__(game, board, 'R', color, pos)
+        if color == 0:
+            self.image = game.black_pieces["rook"]
+            super().__init__(game, board, 'r', color, pos)
+    
+    def possible_moves(self):
+        '''
+        return a list of all possible moves for piece as names of cells a-h 1-8
+        '''
+        possible_moves = []
+
+        x, y = convert_position(self.pos)
+
+        cross = [[[x + i, y] for i in range(1, 8 - x)],
+                [[x - i, y] for i in range(1, x + 1)],
+                [[x, y + i] for i in range(1, 8 - y)],
+                [[x, y - i] for i in range(1, y + 1)]]
+
+        for direction in cross:
+            for position in direction:
+                try:
+                    if position[0] < 0 or position[1] < 0 or position[0] > 7 or position[1] > 7:
+                        break
+                    pos = (position[0], position[1])
+                    if self.game_board[convert_position_to_str(pos)] == 0:
+                        possible_moves.append(convert_position_to_str(pos))
+
+                    elif self.game_board[convert_position_to_str(pos)].color != self.color:
+                        possible_moves.append(convert_position_to_str(pos))
+                except (IndexError, KeyError):
+                    pass
+        
+        return possible_moves
+
+
+class Queen(Piece):
+    '''
+    a class representing a pown piece
+    '''
+    def __init__(self, game, board, color, pos):
+        '''
+        initialise a pawn with its colour and position
+        white color is represented as 1
+        black color is represented as 0
+        possibility of en passant capture is declared by default as False
+        '''
+        if color == 1:
+            self.image = game.white_pieces["queen"]
+            super().__init__(game, board, 'Q', color, pos)
+        if color == 0:
+            self.image = game.black_pieces["queen"]
+            super().__init__(game, board, 'q', color, pos)
+    
+    def possible_moves(self):
+        '''
+        return a list of all possible moves for piece as names of cells a-h 1-8
+        '''
+        possible_moves = []
+
+        x, y = convert_position(self.pos)
+
+        cross = [[[x + i, y] for i in range(1, 8 - x)],
+                [[x - i, y] for i in range(1, x + 1)],
+                [[x, y + i] for i in range(1, 8 - y)],
+                [[x, y - i] for i in range(1, y + 1)]]
+
+        for direction in cross:
+            for position in direction:
+                try:
+                    if position[0] < 0 or position[1] < 0 or position[0] > 7 or position[1] > 7:
+                        break
+                    pos = (position[0], position[1])
+                    if self.game_board[convert_position_to_str(pos)] == 0:
+                        possible_moves.append(convert_position_to_str(pos))
+
+                    elif self.game_board[convert_position_to_str(pos)].color != self.color:
+                        possible_moves.append(convert_position_to_str(pos))
+                except (IndexError, KeyError):
+                    pass
+        diagonals = [[[x + i, y + i] for i in range(1, 8)],
+                    [[x + i, y - i] for i in range(1, 8)],
+                    [[x - i, y + i] for i in range(1, 8)],
+                    [[x - i, y - i] for i in range(1, 8)]]
+
+        for direction in diagonals:
+            for position in direction:
+                try:
+                    if position[0] < 0 or position[1] < 0 or position[0] > 7 or position[1] > 7:
+                        break
+                    pos = (position[0], position[1])
+                    if self.game_board[convert_position_to_str(pos)] == 0:
+                        possible_moves.append(convert_position_to_str(pos))
+
+                    elif self.game_board[convert_position_to_str(pos)].color != self.color:
+                        possible_moves.append(convert_position_to_str(pos))
+                except (IndexError, KeyError):
+                    pass
+        
+        return possible_moves
 
 class Position(pygame.sprite.Sprite):
     def __init__(self, game, grid_x, grid_y, color):

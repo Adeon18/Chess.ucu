@@ -50,12 +50,18 @@ class Game:
         self.pieces = pygame.sprite.LayeredUpdates()
         self.create_board()
         self.board = BoardADT()
-        Pawn(self, self.board, 0, "b8")
-        Pawn(self, self.board, 0, "g8")
+        Pawn(self, self.board, 1, "b2")
+        Pawn(self, self.board, 0, "c3")
+
         King(self, self.board, 0, "c4")
+
         Knight(self, self.board, 0, "c6")
 
         Bishop(self, self.board, 1, "e6")
+
+        Rook(self, self.board, 1, "d6")
+
+        Queen(self, self.board, 1, "h6")
 
         self.draw_debug = False
         self.paused = False
