@@ -139,7 +139,7 @@ class Game:
         """
         Select a piece
         """
-        if 4* TILESIZE <= pos[0] <= WIDTH - 4* TILESIZE and 1 * TILESIZE <= pos[1] <= WIDTH - 1 * TILESIZE:
+        if TILESIZE <= pos[0] <= 9* TILESIZE and 1 * TILESIZE <= pos[1] <= WIDTH - 1 * TILESIZE:
             for piece in self.pieces:
                 piece.selected = False
                 if piece.rect.collidepoint(pos):
@@ -149,7 +149,7 @@ class Game:
         """
         Select a place for the piece to go to
         """
-        if 4* TILESIZE <= pos[0] <= WIDTH - 4* TILESIZE and 1 * TILESIZE <= pos[1] <= WIDTH - 1 * TILESIZE:
+        if TILESIZE <= pos[0] <= 9* TILESIZE and 1 * TILESIZE <= pos[1] <= WIDTH - 1 * TILESIZE:
             for position in self.positions:
                 position.selected = False
                 if position.rect.collidepoint(pos):
