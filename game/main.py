@@ -18,6 +18,7 @@ class Game:
         # Load data and start te clock
         self.clock = pygame.time.Clock()
         self.load_data()
+        self.opponent = None
 
     def load_data(self):
         """
@@ -25,6 +26,10 @@ class Game:
         """
         game_folder = path.dirname(__file__)
         img_folder = path.join(game_folder, 'img')
+        self.font_folder = path.join(game_folder, 'fonts')
+
+        self.board_icon = pygame.image.load(path.join(img_folder, "board.icon.png"))
+        self.board_icon = pygame.transform.scale(self.board_icon, (200, 200))
 
         self.white_pieces = {}
         for piece in WHITE_PIECES:
@@ -48,8 +53,19 @@ class Game:
         self.all_sprites = pygame.sprite.LayeredUpdates()
         self.positions = pygame.sprite.LayeredUpdates()
         self.pieces = pygame.sprite.LayeredUpdates()
+        # Create board
         self.create_board()
         self.board = BoardADT()
+        # Get the flags
+        if self.opponent == "player":
+            self.against_player = True
+            self.against_bot = False
+        elif self.opponent == "PC":
+            self.against_player = False
+            self.against_bot = True
+        else:
+            raise IndexError("No side chosen smh")
+        # Put the figures on the board
         Pawn(self, self.board, 1, "b2")
         Pawn(self, self.board, 0, "c3")
 
@@ -86,6 +102,7 @@ class Game:
         The whole game process logic that need to be updated each second
         """
         self.all_sprites.update()
+        print(self.against_player)
 
 
     def draw_grid(self):
@@ -141,9 +158,9 @@ class Game:
         Blit everything to the screen each frame
         """
         pygame.display.set_caption("{:.2f}".format(self.clock.get_fps()))
-        self.screen.fill(BGCOLOR)
+        self.screen.fill(BGCOLOR2)
 
-        self.draw_grid()
+        # self.draw_grid()
         self.draw_hud()
         # self.all_sprites.draw(self.screen)
         for sprite in self.all_sprites:
@@ -187,12 +204,50 @@ class Game:
                     pos.selected = True
 
     def show_start_screen(self):
-        pass
+        """
+        Show menu before the game start
+        """
+        self.screen.fill(BGCOLOR2)
+        # Draw text and graphics
+        self.draw_text("Chess.com", 70, DARKGREY, WIDTH // 2, HEIGHT / 7, align="center")
+        self.draw_text("A chess game with 2 game modes", 30, DARKGREY, WIDTH // 2, HEIGHT / 4, align="center")
+        self.screen.blit(self.board_icon, (WIDTH//2 - 100, HEIGHT//2 - 100))
+        self.draw_text("Press 0 to play against other player on 1 PC", 25, DARKGREY, WIDTH // 2, HEIGHT - HEIGHT//5, align="center")
+        self.draw_text("Press 1 to play against PC", 25, DARKGREY, WIDTH // 2, HEIGHT - HEIGHT//7, align="center")
+        # Flip the display
+        pygame.display.flip()
+        # 
+        self.wait_for_game_mode()
 
     def show_go_screen(self):
         pass
 
+    def wait_for_game_mode(self):
+        """
+        This is the same as wait for key, but it waits for user
+        to choose PVP or PV(AI)
+        """
+        pygame.event.wait()
+        waiting = True
+        while waiting:
+            self.clock.tick(FPS)
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    waiting = False
+                    self.quit()
+                if event.type == pygame.KEYDOWN:
+                    if event.key == pygame.K_0:
+                        self.opponent = "player"
+                        waiting = False
+                    if event.key == pygame.K_1:
+                        self.opponent = "PC"
+                        waiting = False
+
+
     def wait_for_key(self):
+        """
+        Wait for ANY key pressed by the user
+        """
         pygame.event.wait()
         waiting = True
         while waiting:
@@ -205,7 +260,10 @@ class Game:
                     waiting = False
 
     def draw_text(self, text, size, color, x, y, align='center'):
-        font = pygame.font.SysFont('Consolas', size)
+        """
+        Helper for drawing text on the screen
+        """
+        font = pygame.font.Font(path.join(self.font_folder, "Monospace_default.ttf"), size)
         text_surface = font.render(text, True, color)
         text_rect = text_surface.get_rect()
         if align == "nw":
@@ -241,8 +299,8 @@ class Game:
             # Y's are all the same
             y = abs(i-9) * TILESIZE + TILESIZE/2
             # Draw the numbers
-            self.draw_text(str(i), 20, WHITE, side1_x, y)
-            self.draw_text(str(i), 20, WHITE, side2_x, y)
+            self.draw_text(str(i), 25, BLACK, side1_x, y)
+            self.draw_text(str(i), 25, BLACK, side2_x, y)
         # Draw letters on the board
         letters = ["a", "b", "c", "d", "e", "f", "g", "h"]
         for i, letter in enumerate(letters):
@@ -253,11 +311,11 @@ class Game:
             # Define a stable x for both
             x = 4*TILESIZE + i*TILESIZE + TILESIZE/2
             # Draw the letters
-            self.draw_text(letter, 20, WHITE, x, up_y)
-            self.draw_text(letter, 20, WHITE, x, down_y)
-        
-        pygame.draw.rect(self.screen, BLACK, pygame.Rect(TILESIZE*4, TILESIZE,\
-                                                         TILESIZE*8, TILESIZE*8), int(BORDERSIZE*1.5))
+            self.draw_text(letter, 25, BLACK, x, up_y)
+            self.draw_text(letter, 25, BLACK, x, down_y)
+        # Draw a border around the board
+        pygame.draw.rect(self.screen, DARKGREY, pygame.Rect(TILESIZE*4, TILESIZE,\
+                                                         TILESIZE*8, TILESIZE*8), int(BORDERSIZE*1.2))
 
 
 
