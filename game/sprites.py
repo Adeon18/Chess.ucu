@@ -41,6 +41,7 @@ class BoardADT:
     [0, 0, 0, 0, 0, 0, 0, 0]
 ]
         self.moves = 0
+        self.en_passant = ""
 
     def __getitem__(self, pos):
         '''
@@ -117,7 +118,7 @@ class Piece(pygame.sprite.Sprite):
         # self.position = position
         self.grid_x, self.grid_y = convert_position(pos)
         self.rect = self.image.get_rect()
-        self.rect.centerx = 4*TILESIZE + self.grid_x * TILESIZE + TILESIZE/2
+        self.rect.centerx = TILESIZE + self.grid_x * TILESIZE + TILESIZE/2
         self.rect.centery = 1*TILESIZE + self.grid_y * TILESIZE + TILESIZE/2
 
         self.selected = False
@@ -138,7 +139,7 @@ class Piece(pygame.sprite.Sprite):
         possibilities = [convert_position(x) for x in self.possible_moves()]
         for pos in possibilities:
             # Define the center of the circle
-            center = (4*TILESIZE + pos[0] * TILESIZE + TILESIZE/2, 1*TILESIZE + pos[1] * TILESIZE + TILESIZE/2)
+            center = (TILESIZE + pos[0] * TILESIZE + TILESIZE/2, 1*TILESIZE + pos[1] * TILESIZE + TILESIZE/2)
             pygame.draw.circle(self.game.screen, RED, center, PATHRADIUS)
     
     def update(self):
@@ -161,7 +162,7 @@ class Piece(pygame.sprite.Sprite):
         """
         if next_pos:
             self.grid_x, self.grid_y = next_pos  # This is to keep track of the pos
-            self.rect.centerx = 4*TILESIZE + next_pos[0] * TILESIZE + TILESIZE/2
+            self.rect.centerx = TILESIZE + next_pos[0] * TILESIZE + TILESIZE/2
             self.rect.centery = 1*TILESIZE + next_pos[1] * TILESIZE + TILESIZE/2
             # Get the next pos
             next_pos = convert_position_to_str(next_pos)
@@ -492,7 +493,7 @@ class Position(pygame.sprite.Sprite):
         self.piece = None
         self.selected = False
 
-        self.rect.x = 4*TILESIZE + self.grid_x * TILESIZE
+        self.rect.x = TILESIZE + self.grid_x * TILESIZE
         self.rect.y = 1*TILESIZE + self.grid_y * TILESIZE
 
 

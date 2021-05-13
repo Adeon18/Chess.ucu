@@ -296,9 +296,9 @@ class Game:
         # Draw the board numbers
         for i in range(8, 0, -1):
             # Left side
-            side1_x = 3*TILESIZE + TILESIZE/2
+            side1_x = TILESIZE/2
             # Right side
-            side2_x = 12*TILESIZE + TILESIZE/2
+            side2_x = 9*TILESIZE + TILESIZE/2
             # Y's are all the same
             y = abs(i-9) * TILESIZE + TILESIZE/2
             # Draw the numbers
@@ -312,12 +312,12 @@ class Game:
             # Define the lower row
             down_y = HEIGHT - TILESIZE/2
             # Define a stable x for both
-            x = 4*TILESIZE + i*TILESIZE + TILESIZE/2
+            x = TILESIZE + i*TILESIZE + TILESIZE/2
             # Draw the letters
             self.draw_text(letter, 25, BLACK, x, up_y)
             self.draw_text(letter, 25, BLACK, x, down_y)
         # Draw a border around the board
-        pygame.draw.rect(self.screen, DARKGREY, pygame.Rect(TILESIZE*4, TILESIZE,\
+        pygame.draw.rect(self.screen, DARKGREY, pygame.Rect(TILESIZE, TILESIZE,\
                                                          TILESIZE*8, TILESIZE*8), int(BORDERSIZE*1.2))
 
 
