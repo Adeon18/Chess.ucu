@@ -197,6 +197,8 @@ class Pawn(Piece):
         if color == 0:
             self.image = game.black_pieces["pawn"]
             super().__init__(game, board, 'p', color, pos)
+
+        self.double_move = True
         
         self.en_passant = False
     
@@ -218,6 +220,15 @@ class Pawn(Piece):
                 possible_moves.append(pos)
         except (IndexError, KeyError, AttributeError):
             pass
+
+        if self.double_move:
+            try:
+                if int(self.pos[1]) == 6 or int(self.pos[1]) == 2:
+                    pos = self.pos[0] + str(int(self.pos[1]) + 2*mod)
+                    if self.game_board[pos] == 0:
+                        possible_moves.append(pos)
+            except (IndexError, KeyError, AttributeError):
+                pass
         
         try:
             pos = letters2[letters[self.pos[0]]-1] + str(int(self.pos[1]) + mod)
@@ -307,11 +318,12 @@ class Knight(Piece):
                 try:
                     if i ** 2 + j ** 2 == 5:
                         pos = (x + i, y + j)
-                        if self.game_board[convert_position_to_str(pos)] == 0:
-                            possible_moves.append(convert_position_to_str(pos))
-                    
-                        elif self.game_board[convert_position_to_str(pos)].color != self.color:
-                            possible_moves.append(convert_position_to_str(pos))
+                        if pos[0] <= 7 and pos[1] <= 7 and pos[0] >= 0 and pos[1] >= 0:
+                            if self.game_board[convert_position_to_str(pos)] == 0:
+                                possible_moves.append(convert_position_to_str(pos))
+                        
+                            elif self.game_board[convert_position_to_str(pos)].color != self.color:
+                                possible_moves.append(convert_position_to_str(pos))
                 except (IndexError, KeyError):
                     pass
 
@@ -361,6 +373,9 @@ class Bishop(Piece):
 
                     elif self.game_board[convert_position_to_str(pos)].color != self.color:
                         possible_moves.append(convert_position_to_str(pos))
+                        break
+                    else:
+                        break
                 except (IndexError, KeyError):
                     pass
         
@@ -408,6 +423,9 @@ class Rook(Piece):
 
                     elif self.game_board[convert_position_to_str(pos)].color != self.color:
                         possible_moves.append(convert_position_to_str(pos))
+                        break
+                    else:
+                        break
                 except (IndexError, KeyError):
                     pass
         
@@ -456,8 +474,13 @@ class Queen(Piece):
 
                     elif self.game_board[convert_position_to_str(pos)].color != self.color:
                         possible_moves.append(convert_position_to_str(pos))
+                        break
+                    else:
+                        break
                 except (IndexError, KeyError):
                     pass
+        
+
         diagonals = [[[x + i, y + i] for i in range(1, 8)],
                     [[x + i, y - i] for i in range(1, 8)],
                     [[x - i, y + i] for i in range(1, 8)],
@@ -474,6 +497,9 @@ class Queen(Piece):
 
                     elif self.game_board[convert_position_to_str(pos)].color != self.color:
                         possible_moves.append(convert_position_to_str(pos))
+                        break
+                    else:
+                        break
                 except (IndexError, KeyError):
                     pass
         
