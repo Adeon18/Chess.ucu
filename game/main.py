@@ -44,6 +44,9 @@ class Game:
         self.dim_screen = pygame.Surface(self.screen.get_size()).convert_alpha()
         self.dim_screen.fill((0, 0, 0, 180))
 
+        self.outro_dim_screen = pygame.Surface(self.screen.get_size()).convert_alpha()
+        self.outro_dim_screen.fill((181, 159, 110, 180))
+
 
     def new(self):
         """
@@ -212,18 +215,30 @@ class Game:
         """
         self.screen.fill(BGCOLOR2)
         # Draw text and graphics
-        self.draw_text("Chess.com", 70, DARKGREY, WIDTH // 2, HEIGHT / 7, align="center")
+        self.draw_text("Chess.com", LARGEFONTSZ, DARKGREY, WIDTH // 2, HEIGHT / 7, align="center")
         self.draw_text("A chess game with 2 game modes", 30, DARKGREY, WIDTH // 2, HEIGHT / 4, align="center")
         self.screen.blit(self.board_icon, (WIDTH//2 - 100, HEIGHT//2 - 100))
-        self.draw_text("Press 0 to play against other player on 1 PC", 25, DARKGREY, WIDTH // 2, HEIGHT - HEIGHT//5, align="center")
-        self.draw_text("Press 1 to play against PC", 25, DARKGREY, WIDTH // 2, HEIGHT - HEIGHT//7, align="center")
+        self.draw_text("Press 0 to play against other player on 1 PC", SMALLFONTSZ, DARKGREY, WIDTH // 2, HEIGHT - HEIGHT//5, align="center")
+        self.draw_text("Press 1 to play against PC", SMALLFONTSZ, DARKGREY, WIDTH // 2, HEIGHT - HEIGHT//7, align="center")
         # Flip the display
         pygame.display.flip()
         # 
         self.wait_for_game_mode()
 
     def show_go_screen(self):
-        pass
+        """
+        Show Outro screen
+        """
+        self.screen.blit(self.dim_screen, (0, 0))
+        # Draw text and graphics
+        # Put an if here
+        self.draw_text("X WON", LARGEFONTSZ, WHITE, WIDTH // 2, HEIGHT // 3, align="center", fontname="Monospace_bold.ttf")
+        self.draw_text("Press 0 to play against other player on 1 PC", SMALLFONTSZ, LIGHTBROWN, WIDTH // 2, HEIGHT - HEIGHT//5, align="center")
+        self.draw_text("Press 1 to play against PC", SMALLFONTSZ, LIGHTBROWN, WIDTH // 2, HEIGHT - HEIGHT//7, align="center")
+        # Flip the display
+        pygame.display.flip()
+        # 
+        self.wait_for_game_mode()
 
     def wait_for_game_mode(self):
         """
@@ -262,11 +277,11 @@ class Game:
                 if event.type == pygame.KEYUP:
                     waiting = False
 
-    def draw_text(self, text, size, color, x, y, align='center'):
+    def draw_text(self, text, size, color, x, y, align='center', fontname="Monospace_default.ttf"):
         """
         Helper for drawing text on the screen
         """
-        font = pygame.font.Font(path.join(self.font_folder, "Monospace_default.ttf"), size)
+        font = pygame.font.Font(path.join(self.font_folder, fontname), size)
         text_surface = font.render(text, True, color)
         text_rect = text_surface.get_rect()
         if align == "nw":
@@ -293,6 +308,13 @@ class Game:
         """
         Draw the HUD and everything related
         """
+        self.draw_board_notation_hud()
+        self.draw_points()
+    
+    def draw_board_notation_hud(self):
+        """
+        Draw the notation, border for the board, used by draw_hud
+        """
         # Draw the board numbers
         for i in range(8, 0, -1):
             # Left side
@@ -302,8 +324,8 @@ class Game:
             # Y's are all the same
             y = abs(i-9) * TILESIZE + TILESIZE/2
             # Draw the numbers
-            self.draw_text(str(i), 25, BLACK, side1_x, y)
-            self.draw_text(str(i), 25, BLACK, side2_x, y)
+            self.draw_text(str(i), SMALLFONTSZ, BLACK, side1_x, y)
+            self.draw_text(str(i), SMALLFONTSZ, BLACK, side2_x, y)
         # Draw letters on the board
         letters = ["a", "b", "c", "d", "e", "f", "g", "h"]
         for i, letter in enumerate(letters):
@@ -314,13 +336,22 @@ class Game:
             # Define a stable x for both
             x = TILESIZE + i*TILESIZE + TILESIZE/2
             # Draw the letters
-            self.draw_text(letter, 25, BLACK, x, up_y)
-            self.draw_text(letter, 25, BLACK, x, down_y)
+            self.draw_text(letter, SMALLFONTSZ, BLACK, x, up_y)
+            self.draw_text(letter, SMALLFONTSZ, BLACK, x, down_y)
         # Draw a border around the board
         pygame.draw.rect(self.screen, DARKGREY, pygame.Rect(TILESIZE, TILESIZE,\
                                                          TILESIZE*8, TILESIZE*8), int(BORDERSIZE*1.2))
+    
+    def draw_points(self):
+        """
+        Draw blue and white points to the screen
+        """
+        self.draw_text("WHITE", MEDIUMFONTSZ, WHITE, WIDTH//2 + WIDTH//8 + MEDIUMFONTSZ, HEIGHT//10, fontname="Monospace_bold.ttf")
+        self.draw_text("BLACK", MEDIUMFONTSZ, BLACK, WIDTH//2 + WIDTH//3 + MEDIUMFONTSZ, HEIGHT//10, fontname="Monospace_bold.ttf")
 
-
+        self.draw_text("0", MEDIUMFONTSZ, WHITE, WIDTH//2 + WIDTH//8 + MEDIUMFONTSZ, HEIGHT//6, fontname="Monospace_bold.ttf")
+        self.draw_text("0", MEDIUMFONTSZ, BLACK, WIDTH//2 + WIDTH//3 + MEDIUMFONTSZ, HEIGHT//6, fontname="Monospace_bold.ttf")
+        # self.draw_text(letter, 25, BLACK, x, down_y)
 
 
 
@@ -328,6 +359,6 @@ class Game:
 g = Game()
 g.show_start_screen()
 while True:
-    g.new()
-    g.run()
+    # g.new()
+    # g.run()
     g.show_go_screen()

@@ -13,6 +13,10 @@ BROWN = (120, 68, 0)
 LIGHTBROWN = (186, 141, 82)
 CYAN = (104, 243, 243)
 
+SMALLFONTSZ = 25
+MEDIUMFONTSZ = 40
+LARGEFONTSZ = 70
+
 WIDTH = 1152
 HEIGHT = 640
 TITLE = "Chess.com"
@@ -40,6 +44,19 @@ WHITE_PIECES = {
     "knight": "w_knight.png",
     "rook": "w_rook.png",
     "queen": "w_queen.png",
+}
+
+POINTS = {
+    "P": 1,
+    "p": 1,
+    "N": 3,
+    "n": 3,
+    "B": 3,
+    "b": 3,
+    "R": 5,
+    "r": 5,
+    "Q": 9,
+    "q": 9
 }
 
 PATHRADIUS = 20
