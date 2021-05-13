@@ -102,10 +102,13 @@ class Game:
         The whole game process logic that need to be updated each second
         """
         self.all_sprites.update()
-        print(self.against_player)
+        # print(self.against_player)
 
 
     def draw_grid(self):
+        """
+        Just a debugging tool for grid drawing
+        """
         for x in range(0, WIDTH, TILESIZE):
             pygame.draw.line(self.screen, LIGHTGREY, (x, 0), (x, HEIGHT))
         for y in range(0, HEIGHT, TILESIZE):

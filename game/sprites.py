@@ -82,17 +82,17 @@ class BoardADT:
         Check if we are allowed to move dependng on the color
         """
         x, y = pos
-        # print(self.moves)
         if self.moves % 2 == 0:
-            # print(1)
             if self.content[y][x] != 0:
-                # print(2)
                 if self.content[y][x].color == 1:
                     return True
         else:
             if self.content[y][x] != 0:
                 if self.content[y][x].color == 0:
-                    return True
+                    if self.content[y][x].game.against_player:
+                        return True
+                    elif self.content[y][x].game.against_bot:
+                        return False
 
 
 class Piece(pygame.sprite.Sprite):
