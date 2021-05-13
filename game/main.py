@@ -229,12 +229,37 @@ class Game:
         self.screen.blit(text_surface, text_rect)
 
     def draw_hud(self):
-        for i in range(1, 9):
+        """
+        Draw the HUD and everything related
+        """
+        # Draw the board numbers
+        for i in range(8, 0, -1):
+            # Left side
             side1_x = 3*TILESIZE + TILESIZE/2
-            side2_x = WIDTH - 4*TILESIZE + TILESIZE/2
-            y = i * TILESIZE + TILESIZE/2
+            # Right side
+            side2_x = 12*TILESIZE + TILESIZE/2
+            # Y's are all the same
+            y = abs(i-9) * TILESIZE + TILESIZE/2
+            # Draw the numbers
             self.draw_text(str(i), 20, WHITE, side1_x, y)
             self.draw_text(str(i), 20, WHITE, side2_x, y)
+        # Draw letters on the board
+        letters = ["a", "b", "c", "d", "e", "f", "g", "h"]
+        for i, letter in enumerate(letters):
+            # Define the upper row
+            up_y = TILESIZE/2
+            # Define the lower row
+            down_y = HEIGHT - TILESIZE/2
+            # Define a stable x for both
+            x = 4*TILESIZE + i*TILESIZE + TILESIZE/2
+            # Draw the letters
+            self.draw_text(letter, 20, WHITE, x, up_y)
+            self.draw_text(letter, 20, WHITE, x, down_y)
+        
+        pygame.draw.rect(self.screen, BLACK, pygame.Rect(TILESIZE*4, TILESIZE,\
+                                                         TILESIZE*8, TILESIZE*8), int(BORDERSIZE*1.5))
+
+
 
 
 
