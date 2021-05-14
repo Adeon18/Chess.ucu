@@ -167,16 +167,67 @@ class Piece(pygame.sprite.Sprite):
             # Get the next pos
             next_pos = convert_position_to_str(next_pos)
             print(next_pos)
-            # Kill if needed
-            if self.game_board[next_pos] != 0: 
-                self.game_board[next_pos].kill()
+
+            print(isinstance(self, King))   
+            if isinstance(self, Rook):
+                self.castle = False
+                try:
+                    self.game_board[next_pos].kill()
+                except AttributeError:
+                    pass
+                self.game_board.add_piece(self, next_pos)
+                self.game_board.remove_piece(self.pos)
+                self.game_board.moves += 1
+            
+            elif isinstance(self, King):
+
+                self.left_castle = False
+                self.right_castle = False
+                y = convert_position(self.pos)[1]
+
+                if abs(convert_position(self.pos)[0] - convert_position(next_pos)[0]) == 2:
+                    self.game_board.add_piece(self, next_pos)
+                    print(convert_position(next_pos)[0])
+                    if convert_position(next_pos)[0] <= 4:
+                        self.game_board.content[y][0].move((3, y))
+                    else:
+                        self.game_board.content[y][7].move((5, y))
+                    self.game_board.remove_piece(self.pos)
+
+                else: 
+                    try:
+                        self.game_board[next_pos].kill()
+                    except AttributeError:
+                        pass
+                    self.game_board.add_piece(self, next_pos)
+                    self.game_board.remove_piece(self.pos)
+                    self.game_board.moves += 1
+            elif isinstance(self, Pawn):
+                if (self.color == 1 and next_pos[1] == 7) or (self.color == 0 and next_pos[1] == 0):
+                    self.game_board.add_piece(Queen(self.game, self.game_board, self.color, next_pos), next_pos)
+                    self.game_board.moves += 1
+            
+
+            else:
+                try:
+                    self.game_board[next_pos].kill()
+                except AttributeError:
+                    pass
+                self.game_board.add_piece(self, next_pos)
+                self.game_board.remove_piece(self.pos)
+                self.game_board.moves += 1
+                    
+
+
+            
+
             # Update the board
-            self.game_board.add_piece(self, next_pos)
-            self.game_board.remove_piece(self.pos)
+            
+
             self.pos = next_pos
             print(self.game_board)
             # Deselect and change turns
-            self.game_board.moves += 1
+            
             self.selected = False
             self.draw_add_data = False
 
@@ -223,7 +274,7 @@ class Pawn(Piece):
 
         if self.double_move:
             try:
-                if int(self.pos[1]) == 6 or int(self.pos[1]) == 2:
+                if (int(self.pos[1]) == 6 and self.color == 0) or (int(self.pos[1]) == 2 and self.color == 1):
                     pos = self.pos[0] + str(int(self.pos[1]) + 2*mod)
                     if self.game_board[pos] == 0:
                         possible_moves.append(pos)
@@ -263,6 +314,9 @@ class King(Piece):
         if color == 0:
             self.image = game.black_pieces["king"]
             super().__init__(game, board, 'k', color, pos)
+
+        self.left_castle = True
+        self.right_castle = True
     
     def possible_moves(self):
         '''
@@ -278,14 +332,130 @@ class King(Piece):
                     pos = (x - 1 + i, y - 1 + j)
 
                     if self.game_board[convert_position_to_str(pos)] == 0:
-                        possible_moves.append(convert_position_to_str(pos))
+                        if not self.is_checked(convert_position_to_str(pos)):
+                            possible_moves.append(convert_position_to_str(pos))
                     
                     elif self.game_board[convert_position_to_str(pos)].color != self.color:
-                        possible_moves.append(convert_position_to_str(pos))
+                        if not self.is_checked(convert_position_to_str(pos)):
+                            possible_moves.append(convert_position_to_str(pos))
                 except (IndexError, KeyError):
                     pass
 
+        if self.left_castle and not self.is_checked(self.pos):
+            try:
+                x, y = convert_position(self.pos)
+                if self.game_board.content[y][0].castle:
+                    castle = True
+                    for i in range(3):
+                        if self.game_board.content[y][x-i-1] != 0:
+                            castle = False
+
+                    if not self.is_checked(convert_position_to_str(pos)) and castle:
+                        possible_moves.append(convert_position_to_str((x - 2, y)))
+            except (IndexError, KeyError, AttributeError):
+                pass
+
+        if self.right_castle and not self.is_checked(self.pos):
+            try:
+                x, y = convert_position(self.pos)
+                if self.game_board.content[y][7].castle:
+                    castle = True
+                    for i in range(2):
+                        if self.game_board.content[y][x+i+1] != 0:
+                            castle = False
+                    if not self.is_checked(convert_position_to_str(pos)) and castle:
+                        possible_moves.append(convert_position_to_str((x + 2, y)))
+            except (IndexError, KeyError, AttributeError):
+                pass
+
         return possible_moves
+
+    def is_checked(self, positionn):
+        '''
+        returns True if king is checked, False if not
+        '''
+        x, y = convert_position(positionn)
+        possible_moves = []
+        for i in range(-2, 5):
+            for j in range(-2, 5):
+                try:
+                    if i ** 2 + j ** 2 == 5:
+                        pos = (x + i, y + j)
+                        if pos[0] <= 7 and pos[1] <= 7 and pos[0] >= 0 and pos[1] >= 0:
+                            if self.game_board[convert_position_to_str(pos)] == 0:
+                                possible_moves.append(convert_position_to_str(pos))
+                        
+                            elif self.game_board[convert_position_to_str(pos)].color != self.color:
+                                possible_moves.append(convert_position_to_str(pos))
+                except (IndexError, KeyError):
+                    pass
+        for poss in possible_moves:
+            if isinstance(self.game_board[poss], Knight):
+                return True
+
+        possible_moves = []
+
+        x, y = convert_position(positionn)
+
+        diagonals = [[[x + i, y + i] for i in range(1, 8)],
+                    [[x + i, y - i] for i in range(1, 8)],
+                    [[x - i, y + i] for i in range(1, 8)],
+                    [[x - i, y - i] for i in range(1, 8)]]
+
+        for direction in diagonals:
+            for position in direction:
+                try:
+                    if position[0] < 0 or position[1] < 0 or position[0] > 7 or position[1] > 7:
+                        break
+                    pos = (position[0], position[1])
+                    if self.game_board[convert_position_to_str(pos)] == 0:
+                        possible_moves.append(convert_position_to_str(pos))
+
+                    elif self.game_board[convert_position_to_str(pos)].color != self.color:
+                        possible_moves.append(convert_position_to_str(pos))
+                        break
+                    else:
+                        break
+                except (IndexError, KeyError):
+                    pass
+
+        for poss in possible_moves:
+            x, y = convert_position(poss)
+            if isinstance(self.game_board[poss], Bishop) or isinstance(self.game_board[poss], Queen):
+                return True
+
+        possible_moves = []
+
+        x, y = convert_position(positionn)
+
+        cross = [[[x + i, y] for i in range(1, 8 - x)],
+                [[x - i, y] for i in range(1, x + 1)],
+                [[x, y + i] for i in range(1, 8 - y)],
+                [[x, y - i] for i in range(1, y + 1)]]
+
+        for direction in cross:
+            for position in direction:
+                try:
+                    if position[0] < 0 or position[1] < 0 or position[0] > 7 or position[1] > 7:
+                        break
+                    pos = (position[0], position[1])
+                    if self.game_board[convert_position_to_str(pos)] == 0:
+                        possible_moves.append(convert_position_to_str(pos))
+
+                    elif self.game_board[convert_position_to_str(pos)].color != self.color:
+                        possible_moves.append(convert_position_to_str(pos))
+                        break
+                    else:
+                        break
+                except (IndexError, KeyError):
+                    pass
+        for poss in possible_moves:
+            x, y = convert_position(poss)
+            if isinstance(self.game_board[poss], Rook) or isinstance(self.game_board[poss], Queen):
+                return True
+        return False
+
+
 
 class Knight(Piece):
     '''
@@ -304,6 +474,7 @@ class Knight(Piece):
         if color == 0:
             self.image = game.black_pieces["knight"]
             super().__init__(game, board, 'n', color, pos)
+
     
     def possible_moves(self):
         '''
@@ -326,7 +497,6 @@ class Knight(Piece):
                                 possible_moves.append(convert_position_to_str(pos))
                 except (IndexError, KeyError):
                     pass
-
         return possible_moves
 
 class Bishop(Piece):
@@ -398,6 +568,7 @@ class Rook(Piece):
         if color == 0:
             self.image = game.black_pieces["rook"]
             super().__init__(game, board, 'r', color, pos)
+        self.castle = True
     
     def possible_moves(self):
         '''
