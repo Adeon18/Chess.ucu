@@ -75,7 +75,7 @@ class Game:
         Pawn(self, self.board, 1, "c2")
         Pawn(self, self.board, 1, "d2")
         Pawn(self, self.board, 1, "e2")
-        Pawn(self, self.board, 1, "f2")
+        Pawn(self, self.board, 1, "f6")
         Pawn(self, self.board, 1, "g2")
         Pawn(self, self.board, 1, "h2")
 

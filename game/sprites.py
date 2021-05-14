@@ -228,10 +228,35 @@ class Piece(pygame.sprite.Sprite):
                     self.game_board.add_piece(self, next_pos)
                     self.game_board.remove_piece(self.pos)
                     self.game_board.moves += 1
-            # elif isinstance(self, Pawn):
-            #     if (self.color == 1 and next_pos[1] == 7) or (self.color == 0 and next_pos[1] == 0):
-            #         self.game_board.add_piece(Queen(self.game, self.game_board, self.color, next_pos), next_pos)
-            #         self.game_board.moves += 1
+            
+            elif isinstance(self, Pawn):
+                print(self.color, next_pos[1])
+                if int(next_pos[1]) == 8 or int(next_pos[1]) == 1:
+                    try:
+                        if self.color == 1:
+                                self.game_board.white_points += POINTS[self.game_board[next_pos].tipe]
+                        else:
+                                self.game_board.black_points += POINTS[self.game_board[next_pos].tipe]
+                        self.game_board[next_pos].kill()
+                    except AttributeError:
+                        pass
+                    print("QUEEEEN")
+                    self.game_board.add_piece(Queen(self.game, self.game_board, self.color, next_pos), next_pos)
+                    self.game_board.remove_piece(self.pos)
+                    self.kill()
+                    
+                else:
+                    try:
+                        if self.color == 1:
+                                self.game_board.white_points += POINTS[self.game_board[next_pos].tipe]
+                        else:
+                                self.game_board.black_points += POINTS[self.game_board[next_pos].tipe]
+                        self.game_board[next_pos].kill()
+                    except:
+                        pass
+                    self.game_board.add_piece(self, next_pos)
+                    self.game_board.remove_piece(self.pos)
+                self.game_board.moves += 1
             
 
             else:
