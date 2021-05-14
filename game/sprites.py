@@ -202,10 +202,10 @@ class Piece(pygame.sprite.Sprite):
                     self.game_board.add_piece(self, next_pos)
                     self.game_board.remove_piece(self.pos)
                     self.game_board.moves += 1
-            elif isinstance(self, Pawn):
-                if (self.color == 1 and next_pos[1] == 7) or (self.color == 0 and next_pos[1] == 0):
-                    self.game_board.add_piece(Queen(self.game, self.game_board, self.color, next_pos), next_pos)
-                    self.game_board.moves += 1
+            # elif isinstance(self, Pawn):
+            #     if (self.color == 1 and next_pos[1] == 7) or (self.color == 0 and next_pos[1] == 0):
+            #         self.game_board.add_piece(Queen(self.game, self.game_board, self.color, next_pos), next_pos)
+            #         self.game_board.moves += 1
             
 
             else:
@@ -217,10 +217,6 @@ class Piece(pygame.sprite.Sprite):
                 self.game_board.remove_piece(self.pos)
                 self.game_board.moves += 1
                     
-
-
-            
-
             # Update the board
             
 
