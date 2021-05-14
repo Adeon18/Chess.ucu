@@ -69,18 +69,43 @@ class Game:
         else:
             raise IndexError("No side chosen smh")
         # Put the figures on the board
+        # White
+        Pawn(self, self.board, 1, "a2")
         Pawn(self, self.board, 1, "b2")
-        Pawn(self, self.board, 0, "c3")
+        Pawn(self, self.board, 1, "c2")
+        Pawn(self, self.board, 1, "d2")
+        Pawn(self, self.board, 1, "e2")
+        Pawn(self, self.board, 1, "f2")
+        Pawn(self, self.board, 1, "g2")
+        Pawn(self, self.board, 1, "h2")
 
-        King(self, self.board, 0, "c4")
+        King(self, self.board, 1, "e1")
+        Queen(self, self.board, 1, "d1")
+        Knight(self, self.board, 1, "b1")
+        Knight(self, self.board, 1, "g1")
+        Bishop(self, self.board, 1, "c1")
+        Bishop(self, self.board, 1, "f1")
+        Rook(self, self.board, 1, "a1")
+        Rook(self, self.board, 1, "h1")
+        # Black
+        Pawn(self, self.board, 0, "a7")
+        Pawn(self, self.board, 0, "b7")
+        Pawn(self, self.board, 0, "c7")
+        Pawn(self, self.board, 0, "d7")
+        Pawn(self, self.board, 0, "e7")
+        Pawn(self, self.board, 0, "f7")
+        Pawn(self, self.board, 0, "g7")
+        Pawn(self, self.board, 0, "h7")
 
-        Knight(self, self.board, 0, "c6")
+        King(self, self.board, 0, "e8")
+        Queen(self, self.board, 0, "d8")
+        Knight(self, self.board, 0, "b8")
+        Knight(self, self.board, 0, "g8")
+        Bishop(self, self.board, 0, "c8")
+        Bishop(self, self.board, 0, "f8")
+        Rook(self, self.board, 0, "a8")
+        Rook(self, self.board, 0, "h8")
 
-        Bishop(self, self.board, 1, "e6")
-
-        Rook(self, self.board, 1, "d6")
-
-        Queen(self, self.board, 1, "h6")
 
         self.draw_debug = False
         self.paused = False
@@ -105,7 +130,8 @@ class Game:
         The whole game process logic that need to be updated each second
         """
         self.all_sprites.update()
-        # print(self.against_player)
+        # print(self.board.white_points)
+        # print(self.board.black_points)
 
 
     def draw_grid(self):
@@ -232,7 +258,10 @@ class Game:
         self.screen.blit(self.dim_screen, (0, 0))
         # Draw text and graphics
         # Put an if here
-        self.draw_text("X WON", LARGEFONTSZ, WHITE, WIDTH // 2, HEIGHT // 3, align="center", fontname="Monospace_bold.ttf")
+        if self.board.winning_team == 1:
+            self.draw_text("WHITE WON", LARGEFONTSZ, WHITE, WIDTH // 2, HEIGHT // 3, align="center", fontname="Monospace_bold.ttf")
+        elif self.board.winning_team == 0:
+            self.draw_text("BLACK WON", LARGEFONTSZ, BLACK, WIDTH // 2, HEIGHT // 3, align="center", fontname="Monospace_bold.ttf")
         self.draw_text("Press 0 to play against other player on 1 PC", SMALLFONTSZ, LIGHTBROWN, WIDTH // 2, HEIGHT - HEIGHT//5, align="center")
         self.draw_text("Press 1 to play against PC", SMALLFONTSZ, LIGHTBROWN, WIDTH // 2, HEIGHT - HEIGHT//7, align="center")
         # Flip the display
@@ -349,8 +378,8 @@ class Game:
         self.draw_text("WHITE", MEDIUMFONTSZ, WHITE, WIDTH//2 + WIDTH//8 + MEDIUMFONTSZ, HEIGHT//10, fontname="Monospace_bold.ttf")
         self.draw_text("BLACK", MEDIUMFONTSZ, BLACK, WIDTH//2 + WIDTH//3 + MEDIUMFONTSZ, HEIGHT//10, fontname="Monospace_bold.ttf")
 
-        self.draw_text("0", MEDIUMFONTSZ, WHITE, WIDTH//2 + WIDTH//8 + MEDIUMFONTSZ, HEIGHT//6, fontname="Monospace_bold.ttf")
-        self.draw_text("0", MEDIUMFONTSZ, BLACK, WIDTH//2 + WIDTH//3 + MEDIUMFONTSZ, HEIGHT//6, fontname="Monospace_bold.ttf")
+        self.draw_text(f"{self.board.white_points}", MEDIUMFONTSZ, WHITE, WIDTH//2 + WIDTH//8 + MEDIUMFONTSZ, HEIGHT//6, fontname="Monospace_bold.ttf")
+        self.draw_text(f"{self.board.black_points}", MEDIUMFONTSZ, BLACK, WIDTH//2 + WIDTH//3 + MEDIUMFONTSZ, HEIGHT//6, fontname="Monospace_bold.ttf")
         # self.draw_text(letter, 25, BLACK, x, down_y)
 
 

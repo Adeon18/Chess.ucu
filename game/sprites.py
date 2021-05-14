@@ -42,6 +42,9 @@ class BoardADT:
 ]
         self.moves = 0
         self.en_passant = ""
+        self.winning_team = ""
+        self.white_points = 0
+        self.black_points = 0
 
     def __getitem__(self, pos):
         '''
@@ -172,6 +175,17 @@ class Piece(pygame.sprite.Sprite):
             if isinstance(self, Rook):
                 self.castle = False
                 try:
+                    if self.game_board[next_pos].tipe == "k":
+                        self.game_board.winning_team = 1
+                        self.game.playing = False
+                    elif self.game_board[next_pos].tipe == "K":
+                        self.game_board.winning_team = 0
+                        self.game.playing = False
+                    else:
+                        if self.color == 1:
+                            self.game_board.white_points += POINTS[self.game_board[next_pos].tipe]
+                        else:
+                            self.game_board.black_points += POINTS[self.game_board[next_pos].tipe]
                     self.game_board[next_pos].kill()
                 except AttributeError:
                     pass
@@ -196,7 +210,19 @@ class Piece(pygame.sprite.Sprite):
 
                 else: 
                     try:
-                        self.game_board[next_pos].kill()
+                        # Check for the points and the king death
+                        if self.game_board[next_pos].tipe == "k":
+                            self.game_board.winning_team = 1
+                            self.game.playing = False
+                        elif self.game_board[next_pos].tipe == "K":
+                            self.game_board.winning_team = 0
+                            self.game.playing = False
+                        else:
+                            if self.color == 1:
+                                self.game_board.white_points += POINTS[self.game_board[next_pos].tipe]
+                            else:
+                                self.game_board.black_points += POINTS[self.game_board[next_pos].tipe]
+                            self.game_board[next_pos].kill()
                     except AttributeError:
                         pass
                     self.game_board.add_piece(self, next_pos)
@@ -210,6 +236,17 @@ class Piece(pygame.sprite.Sprite):
 
             else:
                 try:
+                    if self.game_board[next_pos].tipe == "k":
+                        self.game_board.winning_team = 1
+                        self.game.playing = False
+                    elif self.game_board[next_pos].tipe == "K":
+                        self.game_board.winning_team = 0
+                        self.game.playing = False
+                    else:
+                        if self.color == 1:
+                            self.game_board.white_points += POINTS[self.game_board[next_pos].tipe]
+                        else:
+                            self.game_board.black_points += POINTS[self.game_board[next_pos].tipe]
                     self.game_board[next_pos].kill()
                 except AttributeError:
                     pass
@@ -270,7 +307,7 @@ class Pawn(Piece):
 
         if self.double_move:
             try:
-                if (int(self.pos[1]) == 6 and self.color == 0) or (int(self.pos[1]) == 2 and self.color == 1):
+                if (int(self.pos[1]) == 7 and self.color == 0) or (int(self.pos[1]) == 2 and self.color == 1):
                     pos = self.pos[0] + str(int(self.pos[1]) + 2*mod)
                     if self.game_board[pos] == 0:
                         possible_moves.append(pos)
