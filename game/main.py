@@ -4,7 +4,7 @@ from os import path
 
 from settings import *
 from sprites import *
-from selfplay.bestmove import evaluate_board
+from bestmove import evaluate_board
 import time
 
 
@@ -72,24 +72,6 @@ class Game:
         else:
             raise IndexError("No side chosen smh")
         # Put the figures on the board
-        # White
-        Pawn(self, self.board, 1, "a2")
-        Pawn(self, self.board, 1, "b2")
-        Pawn(self, self.board, 1, "c2")
-        Pawn(self, self.board, 1, "d2")
-        Pawn(self, self.board, 1, "e2")
-        Pawn(self, self.board, 1, "f2")
-        Pawn(self, self.board, 1, "g2")
-        Pawn(self, self.board, 1, "h2")
-
-        King(self, self.board, 1, "e1")
-        Queen(self, self.board, 1, "d1")
-        Knight(self, self.board, 1, "b1")
-        Knight(self, self.board, 1, "g1")
-        Bishop(self, self.board, 1, "c1")
-        Bishop(self, self.board, 1, "f1")
-        Rook(self, self.board, 1, "a1")
-        Rook(self, self.board, 1, "h1")
         # Black
         Pawn(self, self.board, 0, "a7")
         Pawn(self, self.board, 0, "b7")
@@ -108,7 +90,24 @@ class Game:
         Bishop(self, self.board, 0, "f8")
         Rook(self, self.board, 0, "a8")
         Rook(self, self.board, 0, "h8")
+        # White
+        Pawn(self, self.board, 1, "a2")
+        Pawn(self, self.board, 1, "b2")
+        Pawn(self, self.board, 1, "c2")
+        Pawn(self, self.board, 1, "d2")
+        Pawn(self, self.board, 1, "e2")
+        Pawn(self, self.board, 1, "f2")
+        Pawn(self, self.board, 1, "g2")
+        Pawn(self, self.board, 1, "h2")
 
+        King(self, self.board, 1, "e1")
+        Queen(self, self.board, 1, "d1")
+        Knight(self, self.board, 1, "b1")
+        Knight(self, self.board, 1, "g1")
+        Bishop(self, self.board, 1, "c1")
+        Bishop(self, self.board, 1, "f1")
+        Rook(self, self.board, 1, "a1")
+        Rook(self, self.board, 1, "h1")
         # print(f"Board evaluated: {evaluate_board(self.board)}")
 
         self.draw_debug = False
@@ -146,6 +145,7 @@ class Game:
                 # if pygame.time.get_ticks() - ticks
                 # pygame.time.wait(1000)
                 self.board.make_computer_move()
+                # self.board.deselect_all()
 
     def draw_grid(self):
         """
@@ -271,7 +271,7 @@ class Game:
             self.draw_text("WHITE WON", LARGEFONTSZ, WHITE, WIDTH // 2, HEIGHT // 3, align="center", fontname="Monospace_bold.ttf")
         elif self.board.winning_team == 0:
             self.draw_text("BLACK WON", LARGEFONTSZ, WHITE, WIDTH // 2, HEIGHT // 3, align="center", fontname="Monospace_bold.ttf")
-        self.draw_text("Press 0 to play against other player on 1 PC", SMALLFONTSZ, LIGHTBROWN, WIDTH // 2, HEIGHT - HEIGHT//5, align="center")
+        self.draw_text("Press 0 to play against a friend", SMALLFONTSZ, LIGHTBROWN, WIDTH // 2, HEIGHT - HEIGHT//5, align="center")
         self.draw_text("Press 1 to play against PC", SMALLFONTSZ, LIGHTBROWN, WIDTH // 2, HEIGHT - HEIGHT//7, align="center")
         # Flip the display
         pygame.display.flip()
@@ -383,11 +383,11 @@ class Game:
         """
         Draw blue and white points to the screen
         """
-        self.draw_text("WHITE", MEDIUMFONTSZ, WHITE, WIDTH//2 + WIDTH//8 + MEDIUMFONTSZ, HEIGHT//10, fontname="Monospace_bold.ttf")
-        self.draw_text("BLACK", MEDIUMFONTSZ, BLACK, WIDTH//2 + WIDTH//3 + MEDIUMFONTSZ, HEIGHT//10, fontname="Monospace_bold.ttf")
+        self.draw_text("WHITE", MEDIUMFONTSZ, WHITE, WIDTH//4 + MEDIUMFONTSZ, HEIGHT - HEIGHT//6, fontname="Monospace_bold.ttf")
+        self.draw_text("BLACK", MEDIUMFONTSZ, BLACK, WIDTH//2 + WIDTH//4 - MEDIUMFONTSZ, HEIGHT - HEIGHT//6, fontname="Monospace_bold.ttf")
 
-        self.draw_text(f"{self.board.white_points}", MEDIUMFONTSZ, WHITE, WIDTH//2 + WIDTH//8 + MEDIUMFONTSZ, HEIGHT//6, fontname="Monospace_bold.ttf")
-        self.draw_text(f"{self.board.black_points}", MEDIUMFONTSZ, BLACK, WIDTH//2 + WIDTH//3 + MEDIUMFONTSZ, HEIGHT//6, fontname="Monospace_bold.ttf")
+        self.draw_text(f"{self.board.white_points}", MEDIUMFONTSZ, WHITE, WIDTH//4 + MEDIUMFONTSZ, HEIGHT - HEIGHT//12, fontname="Monospace_bold.ttf")
+        self.draw_text(f"{self.board.black_points}", MEDIUMFONTSZ, BLACK, WIDTH//2 + WIDTH//4 - MEDIUMFONTSZ, HEIGHT - HEIGHT//12, fontname="Monospace_bold.ttf")
         # self.draw_text(letter, 25, BLACK, x, down_y)
 
 

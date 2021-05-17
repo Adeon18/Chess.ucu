@@ -1,7 +1,7 @@
 import pygame
 from copy import deepcopy
 from settings import *
-from selfplay.bestmove import *
+from bestmove import *
 from pprint import pprint
 from time import sleep
 
