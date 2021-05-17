@@ -1,3 +1,6 @@
+'''
+module with boardADT and Pieces for player
+'''
 import pygame
 from copy import deepcopy
 from settings import *
@@ -11,6 +14,7 @@ letters2 = {0: 'a', 1: 'b', 2: 'c', 3: 'd', 4: 'e', 5: 'f', 6: 'g', 7: 'h'}
 
 def convert_position(string):
     '''
+    convert position in chess notation to standart list indexes
     '''
     x, y = string[0], string[1]
     x = letters[x]
@@ -20,6 +24,7 @@ def convert_position(string):
 
 def convert_position_to_str(pos):
     '''
+    convert standart list indexes to the chess notation
     '''
     x, y = pos[0], pos[1]
     x = letters2[x]
@@ -62,23 +67,32 @@ class BoardADT:
 
     def __getitem__(self, pos):
         '''
+        get item from ADT
+        pos must be in chess notation: "a1" - "h8"
         '''
         x, y = convert_position(pos)
         return self.content[y][x]
 
     def add_piece(self, piece, position):
         '''
+        add a piece to the board
+        piece instance must be Piece
         '''
         x, y = convert_position(position)
         self.content[y][x] = piece
 
     def remove_piece(self, position):
         '''
+        remove piece from chess board by it's position
         '''
         x, y = convert_position(position)
         self.content[y][x] = 0
     
     def __str__(self):
+        '''
+        return a chess board with pieces being represented as letters
+        capital letter means white piece, lower case - black piece
+        '''
         result = ""
         for i in self.content:
             for j in i:
@@ -113,6 +127,9 @@ class BoardADT:
                         return False
 
     def make_computer_move(self):
+        '''
+        function that calls computer move
+        '''
         print("Ready to make computer move, moves =", self.moves)
         # sleep(0.5)
         try:
@@ -127,6 +144,9 @@ class BoardADT:
         # self.moves += 1
 
     def is_game_over(self):
+        '''
+        check if the game is over
+        '''
         k_in, K_in = False, False
         for row in self.content:
             for piece in row:

@@ -1,3 +1,7 @@
+'''
+main module for the chess
+pygame interface is located here
+'''
 import pygame
 import sys
 from os import path

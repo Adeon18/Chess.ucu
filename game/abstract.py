@@ -1,3 +1,6 @@
+'''
+a module representing BoardADT and abstract pieces for bot
+'''
 from pprint import pprint
 from copy import deepcopy
 from settings import LETTERS
@@ -8,6 +11,7 @@ old_boards = []
 
 def convert_position(string):
     '''
+    convert position in chess notation to standart list indexes
     '''
     x, y = string[0], string[1]
     x = letters[x]
@@ -17,6 +21,7 @@ def convert_position(string):
 
 def convert_position_to_str(pos):
     '''
+    convert standart list indexes to the chess notation
     '''
     x, y = pos[0], pos[1]
     x = letters2[x]
@@ -65,23 +70,32 @@ class AbstractBoardADT:
 
     def __getitem__(self, pos):
         '''
+        get item from ADT
+        pos must be in chess notation: "a1" - "h8"
         '''
         x, y = convert_position(pos)
         return self.content[y][x]
 
     def add_piece(self, piece, position):
         '''
+        add a piece to the board
+        piece instance must be Piece
         '''
         x, y = convert_position(position)
         self.content[y][x] = piece
 
     def remove_piece(self, position):
         '''
+        remove piece from chess board by it's position
         '''
         x, y = convert_position(position)
         self.content[y][x] = 0
     
     def __str__(self):
+        '''
+        return a chess board with pieces being represented as letters
+        capital letter means white piece, lower case - black piece
+        '''
         result = ""
         for i in self.content:
             for j in i:

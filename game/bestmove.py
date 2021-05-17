@@ -1,4 +1,6 @@
-""" Best move generation """
+'''
+a module to generate the best moves
+'''
 
 from random import choice
 from settings import EVALUATION_POINTS, INF, LETTERS
@@ -13,6 +15,7 @@ letters2 = {0: 'a', 1: 'b', 2: 'c', 3: 'd', 4: 'e', 5: 'f', 6: 'g', 7: 'h'}
 
 def convert_position(string):
     '''
+    convert position from standart list indexes to chess notation
     '''
     x, y = string[0], string[1]
     x = letters[x]
