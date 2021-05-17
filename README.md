@@ -13,6 +13,12 @@ Clone the repository
 git clone https://github.com/Adeon18/Chess.ucu.git
 ```
 
+Go to the folder
+
+```bash
+cd Chess.ucu
+```
+
 Use the package manager [pip](https://pip.pypa.io/en/stable/) to install the needed libraries.
 
 ```bash
@@ -28,9 +34,15 @@ python game/main.py
 ```
 
 You are gonna see a window like this pop up:
+
+
 ![gameplay](images/gameplay.png)
 
-**Attention!** If you find the bot too easy or too hard, you can tweak the tree depth, however that may break the program.
+Everything from that point on is pretty intuitive, good luck!
+
+**Attention!** If this did no work for yoy, open an issue and tell us about it.
+
+If you find the bot too easy or too hard, you can tweak the tree depth, however that may break the program.
 
 ## Contributing
 
