@@ -1,0 +1,13 @@
+README.md
+setup.py
+chess.ucu.egg-info/PKG-INFO
+chess.ucu.egg-info/SOURCES.txt
+chess.ucu.egg-info/dependency_links.txt
+chess.ucu.egg-info/top_level.txt
+game/__init__.py
+game/abstract.py
+game/bestmove.py
+game/main.py
+game/settings.py
+game/sprites.py
+game/test_pieces.py
