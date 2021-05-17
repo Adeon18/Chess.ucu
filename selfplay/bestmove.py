@@ -5,13 +5,38 @@ from random import choice
 from game.settings import EVALUATION_POINTS, INF
 import selfplay.abstract as abstract
 from pprint import pprint
+from datetime import datetime
 
 
-def best_move(board, turn="black"):
+def best_move(board, turn="black", depth=2):
+    """ This function generates the best move for the given position and turn """
+    # print("Chosing the move on the following board...")
+    chosen_move = minimax(abstract.AbstractBoardADT(copy=(board.moves, board.content)), depth, -INF, INF, False)[0]
+    # print("MINIMAX OUTPUT:", chosen_move)
+    # print("Looking for", chosen_move[0])
+    for row in board.content:
+        for piece in row:
+            # print(piece)
+            try:
+                # print(piece, str(piece.pos))
+                if piece.pos == chosen_move[0]:
+                    # print("Found!")
+                    # print("CHOSEN MOVE:", chosen_move)
+                    return piece, chosen_move[1]
+            except AttributeError:
+                pass
+    # print("Chose.")
+
+
+def multidepth_best_move(board, turn="black"):
     """ This function generates the best move for the given position and turn """
     # print("Chosing the move on the following board...")
     pprint(board.content)
-    chosen_move = minimax(abstract.AbstractBoardADT(copy=(board.moves, board.content)), 1, -INF, INF, False)[0]
+    for depth in range(1, 4):
+        t1 = datetime.now()
+        chosen_move = minimax(abstract.AbstractBoardADT(copy=(board.moves, board.content)), depth, -INF, INF, False)[0]
+        t2 = datetime.now()
+        print(f"Minimax (depth = {depth}) took {t2-t1}. Chosen move: {chosen_move}")
     # print("MINIMAX OUTPUT:", chosen_move)
     # print("Looking for", chosen_move[0])
     for row in board.content:
@@ -38,7 +63,7 @@ def minimax(abstract_board: abstract.AbstractBoardADT, depth: int, alpha, beta, 
     current_best_move = choice(moves)
 
     if player_turn:
-        print("Maximizing board")
+        # print("Maximizing board")
         current_max = -INF
         for move in moves:
             piece_from_pos(abstract_board, move[0]).move(convert_position(move[1]))
@@ -47,14 +72,14 @@ def minimax(abstract_board: abstract.AbstractBoardADT, depth: int, alpha, beta, 
             if new_evaluation > current_max:
                 current_max = new_evaluation
                 current_best_move = (move[0], move[1])
-                print(f"Move {current_best_move} returned evaluation {new_evaluation}, new record")
+                # print(f"Move {current_best_move} returned evaluation {new_evaluation}, new record")
             alpha = max(alpha, new_evaluation)
             if beta <= alpha:
                 break
 
         return current_best_move, current_max
     else:
-        print("Minimizing board")
+        # print("Minimizing board")
         current_min = INF
         for move in moves:
             piece_from_pos(abstract_board, move[0]).move(convert_position(move[1]))
@@ -63,7 +88,7 @@ def minimax(abstract_board: abstract.AbstractBoardADT, depth: int, alpha, beta, 
             if new_evaluation < current_min:
                 current_min = new_evaluation
                 current_best_move = (move[0], move[1])
-                print(f"Move {current_best_move} returned evaluation {new_evaluation}, new record")
+                # print(f"Move {current_best_move} returned evaluation {new_evaluation}, new record")
             beta = min(beta, new_evaluation)
             if beta <= alpha:
                 break

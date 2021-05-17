@@ -115,7 +115,11 @@ class BoardADT:
     def make_computer_move(self):
         print("Ready to make computer move, moves =", self.moves)
         # sleep(0.5)
-        chosen_piece, chosen_move = best_move(self)
+        try:
+            chosen_piece, chosen_move = best_move(self, depth=DEPTH)
+        except TypeError:
+            self.winning_team = 1
+            return None
         print(f"Computer chose {chosen_piece} to move to {chosen_move}")
         chosen_move = (letters[chosen_move[0]], 8 - int(chosen_move[1]))
         chosen_piece.move(chosen_move)
