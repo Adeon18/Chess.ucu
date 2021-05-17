@@ -1,9 +1,13 @@
 import pygame
+from copy import deepcopy
 from settings import *
+from selfplay.bestmove import *
 from pprint import pprint
+from time import sleep
 
 letters = {'a': 0, 'b': 1, 'c': 2, 'd': 3, 'e': 4, 'f': 5, 'g': 6, 'h': 7}
 letters2 = {0: 'a', 1: 'b', 2: 'c', 3: 'd', 4: 'e', 5: 'f', 6: 'g', 7: 'h'}
+
 
 def convert_position(string):
     '''
@@ -12,6 +16,7 @@ def convert_position(string):
     x = letters[x]
     y = 8 - int(y)
     return x, y
+
 
 def convert_position_to_str(pos):
     '''
@@ -22,29 +27,38 @@ def convert_position_to_str(pos):
     res = str(x) + str(y)
     return res
 
+
 class BoardADT:
     '''
     board data type which contains all the information about the chess game
     '''
-    def __init__(self):
+    def __init__(self, copy=None):
         '''
         initialise an empty board
         '''
-        self.content = [
-    [0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0]
-]
-        self.moves = 0
-        self.en_passant = ""
-        self.winning_team = ""
-        self.white_points = 0
-        self.black_points = 0
+        if copy:
+            self.init_from_copy()
+        else:
+            self.content = [
+                [0, 0, 0, 0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0, 0, 0, 0]
+            ]
+            self.moves = 0
+            self.en_passant = ""
+            self.winning_team = ""
+            self.white_points = 0
+            self.black_points = 0
+
+    def init_from_copy(self, copy):
+        old_content, self.moves, self.en_passant, self.winning_team, self.white_points, self.black_points = copy
+        for row in old_content:
+            print(row)
 
     def __getitem__(self, pos):
         '''
@@ -98,6 +112,43 @@ class BoardADT:
                     elif self.content[y][x].game.against_bot:
                         return False
 
+    def make_computer_move(self):
+        print("Ready to make computer move, moves =", self.moves)
+        # sleep(0.5)
+        chosen_piece, chosen_move = best_move(self)
+        print(f"Computer chose {chosen_piece} to move to {chosen_move}")
+        chosen_move = (letters[chosen_move[0]], 8 - int(chosen_move[1]))
+        chosen_piece.move(chosen_move)
+        print(chosen_piece, chosen_move)
+        # self.moves += 1
+
+    def is_game_over(self):
+        k_in, K_in = False, False
+        for row in self.content:
+            for piece in row:
+                if str(piece) == "k":
+                    k_in = True
+                elif str(piece) == "K":
+                    K_in = True
+        if not all((k_in, K_in)):
+            return True
+        return False
+
+    def possible_computer_moves(self):
+        # print(board.content)
+        possible_computer_moves = []
+        for row in self.content:
+            for piece in row:
+                if str(piece) == str(piece).lower():
+                    try:
+                        # print(f"{piece} can make following moves: {piece.possible_moves()}")
+                        for move in piece.possible_moves():
+                            possible_computer_moves.append((piece, move))
+                    except AttributeError:
+                        pass
+        # print(f"All possible moves for computer: {possible_computer_moves}")
+        return possible_computer_moves
+
 
 class Piece(pygame.sprite.Sprite):
     '''
@@ -131,6 +182,8 @@ class Piece(pygame.sprite.Sprite):
         self.pos = pos
         self.color = color
         self.game_board.add_piece(self, self.pos)
+
+        self.move_stack = [self.pos]
     
     def __repr__(self):
         return self.tipe
@@ -144,7 +197,7 @@ class Piece(pygame.sprite.Sprite):
             # Define the center of the circle
             center = (TILESIZE + pos[0] * TILESIZE + TILESIZE/2, 1*TILESIZE + pos[1] * TILESIZE + TILESIZE/2)
             pygame.draw.circle(self.game.screen, RED, center, PATHRADIUS)
-    
+
     def update(self):
         # keys = pygame.key.get_pressed()
         if self.selected and self.game_board.check_moves((self.grid_x, self.grid_y)):
@@ -159,19 +212,21 @@ class Piece(pygame.sprite.Sprite):
         else:
             self.draw_add_data = False
     
-    def move(self, next_pos):
+    def move(self, next_pos, hypothetical=False):
         """
         Move the figure to the next position
         """
+        old_white_points, old_black_points = self.game_board.white_points, self.game_board.black_points
         if next_pos:
             self.grid_x, self.grid_y = next_pos  # This is to keep track of the pos
             self.rect.centerx = TILESIZE + next_pos[0] * TILESIZE + TILESIZE/2
             self.rect.centery = 1*TILESIZE + next_pos[1] * TILESIZE + TILESIZE/2
             # Get the next pos
             next_pos = convert_position_to_str(next_pos)
-            print(next_pos)
+            # print(next_pos)
+            self.move_stack.append(next_pos)
 
-            print(isinstance(self, King))   
+            # print(isinstance(self, King))
             if isinstance(self, Rook):
                 self.castle = False
                 try:
@@ -201,7 +256,7 @@ class Piece(pygame.sprite.Sprite):
 
                 if abs(convert_position(self.pos)[0] - convert_position(next_pos)[0]) == 2:
                     self.game_board.add_piece(self, next_pos)
-                    print(convert_position(next_pos)[0])
+                    # print(convert_position(next_pos)[0])
                     if convert_position(next_pos)[0] <= 4:
                         self.game_board.content[y][0].move((3, y))
                     else:
@@ -230,7 +285,7 @@ class Piece(pygame.sprite.Sprite):
                     self.game_board.moves += 1
             
             elif isinstance(self, Pawn):
-                print(self.color, next_pos[1])
+                # print(self.color, next_pos[1])
                 if int(next_pos[1]) == 8 or int(next_pos[1]) == 1:
                     try:
                         if self.color == 1:
@@ -240,7 +295,7 @@ class Piece(pygame.sprite.Sprite):
                         self.game_board[next_pos].kill()
                     except AttributeError:
                         pass
-                    print("QUEEEEN")
+                    # print("QUEEEEN")
                     self.game_board.add_piece(Queen(self.game, self.game_board, self.color, next_pos), next_pos)
                     self.game_board.remove_piece(self.pos)
                     self.kill()
@@ -257,8 +312,6 @@ class Piece(pygame.sprite.Sprite):
                     self.game_board.add_piece(self, next_pos)
                     self.game_board.remove_piece(self.pos)
                 self.game_board.moves += 1
-            
-
             else:
                 try:
                     if self.game_board[next_pos].tipe == "k":
@@ -280,14 +333,26 @@ class Piece(pygame.sprite.Sprite):
                 self.game_board.moves += 1
                     
             # Update the board
-            
+
 
             self.pos = next_pos
-            print(self.game_board)
+            # print(self.game_board)
             # Deselect and change turns
             
             self.selected = False
             self.draw_add_data = False
+
+        if hypothetical:
+            self.game_board.winning_team = ""
+            self.game_board.white_points = old_white_points
+            self.game_board.black_points = old_black_points
+            self.game.playing = True
+
+    def revert_last_move(self):
+        self.move_stack = self.move_stack[:-1]
+        self.move(convert_position(self.move_stack[-1]))
+        self.game_board.moves -= 2
+
 
 class Pawn(Piece):
     '''
@@ -355,6 +420,7 @@ class Pawn(Piece):
 
         return possible_moves
 
+
 class King(Piece):
     '''
     a class representing a pown piece
@@ -389,13 +455,14 @@ class King(Piece):
                 try:
                     pos = (x - 1 + i, y - 1 + j)
 
-                    if self.game_board[convert_position_to_str(pos)] == 0:
-                        if not self.is_checked(convert_position_to_str(pos)):
-                            possible_moves.append(convert_position_to_str(pos))
-                    
-                    elif self.game_board[convert_position_to_str(pos)].color != self.color:
-                        if not self.is_checked(convert_position_to_str(pos)):
-                            possible_moves.append(convert_position_to_str(pos))
+                    if (pos[0] >= 0 and pos[0] <= 7) and (pos[1] >= 0 and pos[1] <= 7):
+                        if self.game_board[convert_position_to_str(pos)] == 0:
+                            if not self.is_checked(convert_position_to_str(pos)):
+                                possible_moves.append(convert_position_to_str(pos))
+                        
+                        elif self.game_board[convert_position_to_str(pos)].color != self.color:
+                            if not self.is_checked(convert_position_to_str(pos)):
+                                possible_moves.append(convert_position_to_str(pos))
                 except (IndexError, KeyError):
                     pass
 
@@ -514,7 +581,6 @@ class King(Piece):
         return False
 
 
-
 class Knight(Piece):
     '''
     a class representing a pown piece
@@ -533,7 +599,6 @@ class Knight(Piece):
             self.image = game.black_pieces["knight"]
             super().__init__(game, board, 'n', color, pos)
 
-    
     def possible_moves(self):
         '''
         return a list of all possible moves for piece as names of cells a-h 1-8
@@ -556,6 +621,7 @@ class Knight(Piece):
                 except (IndexError, KeyError):
                     pass
         return possible_moves
+
 
 class Bishop(Piece):
     '''
@@ -608,6 +674,7 @@ class Bishop(Piece):
                     pass
         
         return possible_moves
+
 
 class Rook(Piece):
     '''
@@ -734,6 +801,7 @@ class Queen(Piece):
         
         return possible_moves
 
+
 class Position(pygame.sprite.Sprite):
     def __init__(self, game, grid_x, grid_y, color):
         self.groups = game.all_sprites, game.positions
@@ -779,4 +847,8 @@ class Position(pygame.sprite.Sprite):
 #             self.rect.centerx = 4*TILESIZE + next_pos[0] * TILESIZE + TILESIZE/2
 #             self.rect.centery = 1*TILESIZE + next_pos[1] * TILESIZE + TILESIZE/2
 #         self.selected = False
-    
+
+
+# if __name__ == "__main__":
+#     board1 = BoardADT()
+#     piece1 = Knight(None, board1, 1, "a2")

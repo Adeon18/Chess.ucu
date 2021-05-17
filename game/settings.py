@@ -1,6 +1,9 @@
 """
 These are the game settings
 """
+
+INF = 1000000
+
 # define some colors (R, G, B)
 WHITE = (255, 255, 255)
 BLACK = (0, 0, 0)
@@ -19,14 +22,17 @@ LARGEFONTSZ = 70
 
 WIDTH = 1152
 HEIGHT = 640
-TITLE = "Chess.com"
+TITLE = "Chess.ucu"
 FPS = 60.0
-BGCOLOR = (184, 152, 83)
+# BGCOLOR = (184, 152, 83)
+# BGCOLOR2 = (255, 255, 255)
 BGCOLOR2 = (181, 159, 110)
 
 TILESIZE = 64
 TILEWIDTH = 64
 TILEHEIGHT = 64
+
+LETTERS = "abcdefgh"
 
 BLACK_PIECES = {
     "bishop": "b_bishop.png",
@@ -56,8 +62,13 @@ POINTS = {
     "R": 5,
     "r": 5,
     "Q": 9,
-    "q": 9
+    "q": 9,
+    "K": 90,
+    "k": 90
 }
 
 PATHRADIUS = 20
 BORDERSIZE = 15
+
+EVALUATION_POINTS = {"p": -10, "n": -30, "b": -30, "r": -50, "q": -90, "k": -900,
+                     "P": 10, "N": 30, "B": 30, "R": 50, "Q": 90, "K": 900}

@@ -4,6 +4,9 @@ from os import path
 
 from settings import *
 from sprites import *
+from selfplay.bestmove import evaluate_board
+import time
+
 
 class Game:
     def __init__(self):
@@ -19,6 +22,7 @@ class Game:
         self.clock = pygame.time.Clock()
         self.load_data()
         self.opponent = None
+        self.additional_update = False
 
     def load_data(self):
         """
@@ -47,7 +51,6 @@ class Game:
         self.outro_dim_screen = pygame.Surface(self.screen.get_size()).convert_alpha()
         self.outro_dim_screen.fill((181, 159, 110, 180))
 
-
     def new(self):
         """
         New game
@@ -75,7 +78,7 @@ class Game:
         Pawn(self, self.board, 1, "c2")
         Pawn(self, self.board, 1, "d2")
         Pawn(self, self.board, 1, "e2")
-        Pawn(self, self.board, 1, "f6")
+        Pawn(self, self.board, 1, "f2")
         Pawn(self, self.board, 1, "g2")
         Pawn(self, self.board, 1, "h2")
 
@@ -106,6 +109,7 @@ class Game:
         Rook(self, self.board, 0, "a8")
         Rook(self, self.board, 0, "h8")
 
+        # print(f"Board evaluated: {evaluate_board(self.board)}")
 
         self.draw_debug = False
         self.paused = False
@@ -132,7 +136,16 @@ class Game:
         self.all_sprites.update()
         # print(self.board.white_points)
         # print(self.board.black_points)
-
+        # ticks = pygame.time.get_ticks()
+        if self.additional_update:
+            self.additional_update = False
+            self.update()
+            time.sleep(0.5)
+        if self.against_bot:
+            if self.board.moves % 2 != 0: # bot move
+                # if pygame.time.get_ticks() - ticks
+                # pygame.time.wait(1000)
+                self.board.make_computer_move()
 
     def draw_grid(self):
         """
@@ -162,13 +175,12 @@ class Game:
                 else:
                     pos = Position(self, x, y, BROWN)
                 # Piece(self, pos, x, y)
-    
-    
+
     def select_click(self, pos):
         """
         Select a piece
         """
-        if TILESIZE <= pos[0] <= 9* TILESIZE and 1 * TILESIZE <= pos[1] <= WIDTH - 1 * TILESIZE:
+        if TILESIZE <= pos[0] <= 9 * TILESIZE and 1 * TILESIZE <= pos[1] <= WIDTH - 1 * TILESIZE:
             for piece in self.pieces:
                 piece.selected = False
                 if piece.rect.collidepoint(pos):
@@ -184,12 +196,10 @@ class Game:
                 if position.rect.collidepoint(pos):
                     return position.grid_x, position.grid_y
 
-
     def draw(self):
         """
         Blit everything to the screen each frame
         """
-        pygame.display.set_caption("{:.2f}".format(self.clock.get_fps()))
         self.screen.fill(BGCOLOR2)
 
         # self.draw_grid()
@@ -205,7 +215,6 @@ class Game:
                 pygame.draw.rect(self.screen, RED, sprite.rect, 3)
             if hasattr(sprite, "draw_add_data") and sprite.draw_add_data:
                 sprite.draw_possible_moves()
-            
 
         if self.draw_debug:
             self.draw_text("{:.2f}".format(self.clock.get_fps()), 25, CYAN, self.scr_width / 2, 30)
@@ -241,11 +250,11 @@ class Game:
         """
         self.screen.fill(BGCOLOR2)
         # Draw text and graphics
-        self.draw_text("Chess.com", LARGEFONTSZ, DARKGREY, WIDTH // 2, HEIGHT / 7, align="center")
+        self.draw_text("Chess.ucu", LARGEFONTSZ, DARKGREY, WIDTH // 2, HEIGHT / 7, align="center")
         self.draw_text("A chess game with 2 game modes", 30, DARKGREY, WIDTH // 2, HEIGHT / 4, align="center")
         self.screen.blit(self.board_icon, (WIDTH//2 - 100, HEIGHT//2 - 100))
-        self.draw_text("Press 0 to play against other player on 1 PC", SMALLFONTSZ, DARKGREY, WIDTH // 2, HEIGHT - HEIGHT//5, align="center")
-        self.draw_text("Press 1 to play against PC", SMALLFONTSZ, DARKGREY, WIDTH // 2, HEIGHT - HEIGHT//7, align="center")
+        self.draw_text("Press 0 to play against a friend", SMALLFONTSZ, DARKGREY, WIDTH // 2, HEIGHT - HEIGHT//5, align="center")
+        self.draw_text("Press 1 to play against the computer", SMALLFONTSZ, DARKGREY, WIDTH // 2, HEIGHT - HEIGHT//7, align="center")
         # Flip the display
         pygame.display.flip()
         # 
@@ -261,7 +270,7 @@ class Game:
         if self.board.winning_team == 1:
             self.draw_text("WHITE WON", LARGEFONTSZ, WHITE, WIDTH // 2, HEIGHT // 3, align="center", fontname="Monospace_bold.ttf")
         elif self.board.winning_team == 0:
-            self.draw_text("BLACK WON", LARGEFONTSZ, BLACK, WIDTH // 2, HEIGHT // 3, align="center", fontname="Monospace_bold.ttf")
+            self.draw_text("BLACK WON", LARGEFONTSZ, WHITE, WIDTH // 2, HEIGHT // 3, align="center", fontname="Monospace_bold.ttf")
         self.draw_text("Press 0 to play against other player on 1 PC", SMALLFONTSZ, LIGHTBROWN, WIDTH // 2, HEIGHT - HEIGHT//5, align="center")
         self.draw_text("Press 1 to play against PC", SMALLFONTSZ, LIGHTBROWN, WIDTH // 2, HEIGHT - HEIGHT//7, align="center")
         # Flip the display
@@ -289,7 +298,6 @@ class Game:
                     if event.key == pygame.K_1:
                         self.opponent = "PC"
                         waiting = False
-
 
     def wait_for_key(self):
         """
@@ -354,7 +362,7 @@ class Game:
             y = abs(i-9) * TILESIZE + TILESIZE/2
             # Draw the numbers
             self.draw_text(str(i), SMALLFONTSZ, BLACK, side1_x, y)
-            self.draw_text(str(i), SMALLFONTSZ, BLACK, side2_x, y)
+            # self.draw_text(str(i), SMALLFONTSZ, BLACK, side2_x, y)
         # Draw letters on the board
         letters = ["a", "b", "c", "d", "e", "f", "g", "h"]
         for i, letter in enumerate(letters):
@@ -365,8 +373,8 @@ class Game:
             # Define a stable x for both
             x = TILESIZE + i*TILESIZE + TILESIZE/2
             # Draw the letters
-            self.draw_text(letter, SMALLFONTSZ, BLACK, x, up_y)
-            self.draw_text(letter, SMALLFONTSZ, BLACK, x, down_y)
+            self.draw_text(letter.upper(), SMALLFONTSZ, BLACK, x, up_y)
+            # self.draw_text(letter, SMALLFONTSZ, BLACK, x, down_y)
         # Draw a border around the board
         pygame.draw.rect(self.screen, DARKGREY, pygame.Rect(TILESIZE, TILESIZE,\
                                                          TILESIZE*8, TILESIZE*8), int(BORDERSIZE*1.2))
@@ -383,11 +391,11 @@ class Game:
         # self.draw_text(letter, 25, BLACK, x, down_y)
 
 
-
-# create the game object
-g = Game()
-g.show_start_screen()
-while True:
-    g.new()
-    g.run()
-    g.show_go_screen()
+if __name__ == "__main__":
+    # create the game object
+    g = Game()
+    g.show_start_screen()
+    while True:
+        g.new()
+        g.run()
+        g.show_go_screen()
