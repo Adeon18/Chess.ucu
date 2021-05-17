@@ -9,4 +9,3 @@ game
    main
    settings
    sprites
-   test_pieces

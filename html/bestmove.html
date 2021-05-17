@@ -1,0 +1,154 @@
+
+<!DOCTYPE html>
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+    <title>bestmove module &#8212; Chess.ucu  documentation</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="_static/alabaster.css" />
+    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="main module" href="main.html" />
+    <link rel="prev" title="abstract module" href="abstract.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <section id="module-bestmove">
+<span id="bestmove-module"></span><h1>bestmove module<a class="headerlink" href="#module-bestmove" title="Permalink to this headline">¶</a></h1>
+<p>a module to generate the best moves</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="bestmove.best_move">
+<span class="sig-prename descclassname"><span class="pre">bestmove.</span></span><span class="sig-name descname"><span class="pre">best_move</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">board</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">turn</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'black'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">depth</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">2</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#bestmove.best_move" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function generates the best move for the given position and turn</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="bestmove.convert_position">
+<span class="sig-prename descclassname"><span class="pre">bestmove.</span></span><span class="sig-name descname"><span class="pre">convert_position</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">string</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#bestmove.convert_position" title="Permalink to this definition">¶</a></dt>
+<dd><p>convert position from standart list indexes to chess notation</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="bestmove.evaluate_board">
+<span class="sig-prename descclassname"><span class="pre">bestmove.</span></span><span class="sig-name descname"><span class="pre">evaluate_board</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">board</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#bestmove.evaluate_board" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="bestmove.minimax">
+<span class="sig-prename descclassname"><span class="pre">bestmove.</span></span><span class="sig-name descname"><span class="pre">minimax</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">abstract_board</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference internal" href="abstract.html#abstract.AbstractBoardADT" title="abstract.AbstractBoardADT"><span class="pre">abstract.AbstractBoardADT</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">depth</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">alpha</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">beta</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">player_turn</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#bestmove.minimax" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the best move for the black side</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="bestmove.multidepth_best_move">
+<span class="sig-prename descclassname"><span class="pre">bestmove.</span></span><span class="sig-name descname"><span class="pre">multidepth_best_move</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">board</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">turn</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'black'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#bestmove.multidepth_best_move" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function generates the best move for the given position and turn</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="bestmove.piece_from_pos">
+<span class="sig-prename descclassname"><span class="pre">bestmove.</span></span><span class="sig-name descname"><span class="pre">piece_from_pos</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">board</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">str_pos</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#bestmove.piece_from_pos" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</section>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="index.html">Chess.ucu</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<p class="caption"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="modules.html">game</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="abstract.html">abstract module</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">bestmove module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="main.html">main module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="settings.html">settings module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sprites.html">sprites module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_pieces.html">test_pieces module</a></li>
+</ul>
+</li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+  <li><a href="modules.html">game</a><ul>
+      <li>Previous: <a href="abstract.html" title="previous chapter">abstract module</a></li>
+      <li>Next: <a href="main.html" title="next chapter">main module</a></li>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2021, Oleksiy Hoyev, Ostap Trush, Yriy Nefedov, Taras Svystun, Maxym Seredovich.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 4.0.1</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+      |
+      <a href="_sources/bestmove.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

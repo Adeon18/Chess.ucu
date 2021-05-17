@@ -1,0 +1,312 @@
+
+<!DOCTYPE html>
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+    <title>sprites module &#8212; Chess.ucu  documentation</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="_static/alabaster.css" />
+    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="test_pieces module" href="test_pieces.html" />
+    <link rel="prev" title="settings module" href="settings.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <section id="module-sprites">
+<span id="sprites-module"></span><h1>sprites module<a class="headerlink" href="#module-sprites" title="Permalink to this headline">¶</a></h1>
+<p>module with boardADT and Pieces for player</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="sprites.Bishop">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">sprites.</span></span><span class="sig-name descname"><span class="pre">Bishop</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">game</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">board</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">color</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pos</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sprites.Bishop" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#sprites.Piece" title="sprites.Piece"><code class="xref py py-class docutils literal notranslate"><span class="pre">sprites.Piece</span></code></a></p>
+<p>a class representing a pown piece</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="sprites.Bishop.possible_moves">
+<span class="sig-name descname"><span class="pre">possible_moves</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#sprites.Bishop.possible_moves" title="Permalink to this definition">¶</a></dt>
+<dd><p>return a list of all possible moves for piece as names of cells a-h 1-8</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="sprites.BoardADT">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">sprites.</span></span><span class="sig-name descname"><span class="pre">BoardADT</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">copy</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sprites.BoardADT" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>board data type which contains all the information about the chess game</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="sprites.BoardADT.add_piece">
+<span class="sig-name descname"><span class="pre">add_piece</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">piece</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">position</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sprites.BoardADT.add_piece" title="Permalink to this definition">¶</a></dt>
+<dd><p>add a piece to the board
+piece instance must be Piece</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sprites.BoardADT.check_moves">
+<span class="sig-name descname"><span class="pre">check_moves</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pos</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sprites.BoardADT.check_moves" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check if we are allowed to move dependng on the color</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sprites.BoardADT.deselect_all">
+<span class="sig-name descname"><span class="pre">deselect_all</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#sprites.BoardADT.deselect_all" title="Permalink to this definition">¶</a></dt>
+<dd><p>Deselect all pieces</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sprites.BoardADT.init_from_copy">
+<span class="sig-name descname"><span class="pre">init_from_copy</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">copy</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sprites.BoardADT.init_from_copy" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sprites.BoardADT.is_game_over">
+<span class="sig-name descname"><span class="pre">is_game_over</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#sprites.BoardADT.is_game_over" title="Permalink to this definition">¶</a></dt>
+<dd><p>check if the game is over</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sprites.BoardADT.make_computer_move">
+<span class="sig-name descname"><span class="pre">make_computer_move</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#sprites.BoardADT.make_computer_move" title="Permalink to this definition">¶</a></dt>
+<dd><p>function that calls computer move</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sprites.BoardADT.possible_computer_moves">
+<span class="sig-name descname"><span class="pre">possible_computer_moves</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#sprites.BoardADT.possible_computer_moves" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sprites.BoardADT.remove_piece">
+<span class="sig-name descname"><span class="pre">remove_piece</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">position</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sprites.BoardADT.remove_piece" title="Permalink to this definition">¶</a></dt>
+<dd><p>remove piece from chess board by it’s position</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="sprites.King">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">sprites.</span></span><span class="sig-name descname"><span class="pre">King</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">game</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">board</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">color</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pos</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sprites.King" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#sprites.Piece" title="sprites.Piece"><code class="xref py py-class docutils literal notranslate"><span class="pre">sprites.Piece</span></code></a></p>
+<p>a class representing a pown piece</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="sprites.King.is_checked">
+<span class="sig-name descname"><span class="pre">is_checked</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">positionn</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sprites.King.is_checked" title="Permalink to this definition">¶</a></dt>
+<dd><p>returns True if king is checked, False if not</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sprites.King.possible_moves">
+<span class="sig-name descname"><span class="pre">possible_moves</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#sprites.King.possible_moves" title="Permalink to this definition">¶</a></dt>
+<dd><p>return a list of all possible moves for piece as names of cells a-h 1-8</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="sprites.Knight">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">sprites.</span></span><span class="sig-name descname"><span class="pre">Knight</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">game</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">board</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">color</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pos</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sprites.Knight" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#sprites.Piece" title="sprites.Piece"><code class="xref py py-class docutils literal notranslate"><span class="pre">sprites.Piece</span></code></a></p>
+<p>a class representing a pown piece</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="sprites.Knight.possible_moves">
+<span class="sig-name descname"><span class="pre">possible_moves</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#sprites.Knight.possible_moves" title="Permalink to this definition">¶</a></dt>
+<dd><p>return a list of all possible moves for piece as names of cells a-h 1-8</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="sprites.Pawn">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">sprites.</span></span><span class="sig-name descname"><span class="pre">Pawn</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">game</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">board</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">color</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pos</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sprites.Pawn" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#sprites.Piece" title="sprites.Piece"><code class="xref py py-class docutils literal notranslate"><span class="pre">sprites.Piece</span></code></a></p>
+<p>a class representing a pown piece</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="sprites.Pawn.possible_moves">
+<span class="sig-name descname"><span class="pre">possible_moves</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#sprites.Pawn.possible_moves" title="Permalink to this definition">¶</a></dt>
+<dd><p>return a list of all possible moves for piece as names of cells a-h 1-8</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="sprites.Piece">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">sprites.</span></span><span class="sig-name descname"><span class="pre">Piece</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">game</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">board</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tipe</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">color</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pos</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sprites.Piece" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">pygame.sprite.Sprite</span></code></p>
+<p>parent class for all pieces</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="sprites.Piece.draw_possible_moves">
+<span class="sig-name descname"><span class="pre">draw_possible_moves</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#sprites.Piece.draw_possible_moves" title="Permalink to this definition">¶</a></dt>
+<dd><p>Draw possible positions for movement</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sprites.Piece.move">
+<span class="sig-name descname"><span class="pre">move</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">next_pos</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hypothetical</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sprites.Piece.move" title="Permalink to this definition">¶</a></dt>
+<dd><p>Move the figure to the next position</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sprites.Piece.revert_last_move">
+<span class="sig-name descname"><span class="pre">revert_last_move</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#sprites.Piece.revert_last_move" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sprites.Piece.update">
+<span class="sig-name descname"><span class="pre">update</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#sprites.Piece.update" title="Permalink to this definition">¶</a></dt>
+<dd><p>method to control sprite behavior</p>
+<p>Sprite.update(<a href="#id1"><span class="problematic" id="id2">*</span></a>args, <a href="#id3"><span class="problematic" id="id4">**</span></a>kwargs):</p>
+<p>The default implementation of this method does nothing; it’s just a
+convenient “hook” that you can override. This method is called by
+Group.update() with whatever arguments you give it.</p>
+<p>There is no need to use this method if not using the convenience
+method by the same name in the Group class.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="sprites.Position">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">sprites.</span></span><span class="sig-name descname"><span class="pre">Position</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">game</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">grid_x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">grid_y</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">color</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sprites.Position" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">pygame.sprite.Sprite</span></code></p>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="sprites.Queen">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">sprites.</span></span><span class="sig-name descname"><span class="pre">Queen</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">game</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">board</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">color</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pos</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sprites.Queen" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#sprites.Piece" title="sprites.Piece"><code class="xref py py-class docutils literal notranslate"><span class="pre">sprites.Piece</span></code></a></p>
+<p>a class representing a pown piece</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="sprites.Queen.possible_moves">
+<span class="sig-name descname"><span class="pre">possible_moves</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#sprites.Queen.possible_moves" title="Permalink to this definition">¶</a></dt>
+<dd><p>return a list of all possible moves for piece as names of cells a-h 1-8</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="sprites.Rook">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">sprites.</span></span><span class="sig-name descname"><span class="pre">Rook</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">game</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">board</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">color</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pos</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sprites.Rook" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#sprites.Piece" title="sprites.Piece"><code class="xref py py-class docutils literal notranslate"><span class="pre">sprites.Piece</span></code></a></p>
+<p>a class representing a pown piece</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="sprites.Rook.possible_moves">
+<span class="sig-name descname"><span class="pre">possible_moves</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#sprites.Rook.possible_moves" title="Permalink to this definition">¶</a></dt>
+<dd><p>return a list of all possible moves for piece as names of cells a-h 1-8</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="sprites.convert_position">
+<span class="sig-prename descclassname"><span class="pre">sprites.</span></span><span class="sig-name descname"><span class="pre">convert_position</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">string</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sprites.convert_position" title="Permalink to this definition">¶</a></dt>
+<dd><p>convert position in chess notation to standart list indexes</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="sprites.convert_position_to_str">
+<span class="sig-prename descclassname"><span class="pre">sprites.</span></span><span class="sig-name descname"><span class="pre">convert_position_to_str</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pos</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sprites.convert_position_to_str" title="Permalink to this definition">¶</a></dt>
+<dd><p>convert standart list indexes to the chess notation</p>
+</dd></dl>
+
+</section>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="index.html">Chess.ucu</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<p class="caption"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="modules.html">game</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="abstract.html">abstract module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="bestmove.html">bestmove module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="main.html">main module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="settings.html">settings module</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">sprites module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_pieces.html">test_pieces module</a></li>
+</ul>
+</li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+  <li><a href="modules.html">game</a><ul>
+      <li>Previous: <a href="settings.html" title="previous chapter">settings module</a></li>
+      <li>Next: <a href="test_pieces.html" title="next chapter">test_pieces module</a></li>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2021, Oleksiy Hoyev, Ostap Trush, Yriy Nefedov, Taras Svystun, Maxym Seredovich.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 4.0.1</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+      |
+      <a href="_sources/sprites.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>
