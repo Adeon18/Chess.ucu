@@ -211,10 +211,13 @@ class AbstractPiece:
                 if abs(convert_position(self.pos)[0] - convert_position(next_pos)[0]) == 2:
                     self.game_board.add_piece(self, next_pos)
                     # print(convert_position(next_pos)[0])
-                    if convert_position(next_pos)[0] <= 4:
-                        self.game_board.content[y][0].move((3, y))
-                    else:
-                        self.game_board.content[y][7].move((5, y))
+                    try:
+                        if convert_position(next_pos)[0] <= 4:
+                            self.game_board.content[y][0].move((3, y))
+                        else:
+                            self.game_board.content[y][7].move((5, y))
+                    except AttributeError:
+                        pass
                     self.game_board.remove_piece(self.pos)
 
                 else: 

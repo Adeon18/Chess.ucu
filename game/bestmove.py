@@ -81,32 +81,34 @@ def minimax(abstract_board: abstract.AbstractBoardADT, depth: int, alpha, beta, 
         # print("Maximizing board")
         current_max = -INF
         for move in moves:
-            piece_from_pos(abstract_board, move[0]).move(convert_position(move[1]))
-            new_evaluation = minimax(abstract_board, depth - 1, alpha, beta, False)[1]
-            abstract_board.revert_last_move()
-            if new_evaluation > current_max:
-                current_max = new_evaluation
-                current_best_move = (move[0], move[1])
-                # print(f"Move {current_best_move} returned evaluation {new_evaluation}, new record")
-            alpha = max(alpha, new_evaluation)
-            if beta <= alpha:
-                break
+            if piece_from_pos(abstract_board, move[0]) != 0:
+                piece_from_pos(abstract_board, move[0]).move(convert_position(move[1]))
+                new_evaluation = minimax(abstract_board, depth - 1, alpha, beta, False)[1]
+                abstract_board.revert_last_move()
+                if new_evaluation > current_max:
+                    current_max = new_evaluation
+                    current_best_move = (move[0], move[1])
+                    # print(f"Move {current_best_move} returned evaluation {new_evaluation}, new record")
+                alpha = max(alpha, new_evaluation)
+                if beta <= alpha:
+                    break
 
         return current_best_move, current_max
     else:
         # print("Minimizing board")
         current_min = INF
         for move in moves:
-            piece_from_pos(abstract_board, move[0]).move(convert_position(move[1]))
-            new_evaluation = minimax(abstract_board, depth - 1, alpha, beta, True)[1]
-            abstract_board.revert_last_move()
-            if new_evaluation < current_min:
-                current_min = new_evaluation
-                current_best_move = (move[0], move[1])
-                # print(f"Move {current_best_move} returned evaluation {new_evaluation}, new record")
-            beta = min(beta, new_evaluation)
-            if beta <= alpha:
-                break
+            if piece_from_pos(abstract_board, move[0]) != 0:
+                piece_from_pos(abstract_board, move[0]).move(convert_position(move[1]))
+                new_evaluation = minimax(abstract_board, depth - 1, alpha, beta, True)[1]
+                abstract_board.revert_last_move()
+                if new_evaluation < current_min:
+                    current_min = new_evaluation
+                    current_best_move = (move[0], move[1])
+                    # print(f"Move {current_best_move} returned evaluation {new_evaluation}, new record")
+                beta = min(beta, new_evaluation)
+                if beta <= alpha:
+                    break
         return current_best_move, current_min
 
 
