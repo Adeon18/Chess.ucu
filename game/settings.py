@@ -73,4 +73,4 @@ BORDERSIZE = 15
 EVALUATION_POINTS = {"p": -10, "n": -30, "b": -30, "r": -50, "q": -90, "k": -900,
                      "P": 10, "N": 30, "B": 30, "R": 50, "Q": 90, "K": 900}
 
-DEPTH = 3
+DEPTH = 2
